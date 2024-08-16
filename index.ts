@@ -31,13 +31,6 @@ app.get('/number', (req: Request, res: Response) => {
       message: 'Number Modified',
       data: {
         number: number,
-        date: new Date().toLocaleString('id-ID', {
-          timeZone: 'Asia/Jakarta',
-          weekday: 'long', // 'long', 'short', 'narrow'
-          year: 'numeric', // '2-digit', 'numeric'
-          month: 'long', // '2-digit', 'long', 'short', 'narrow'
-          day: 'numeric' // '2-digit', 'numeric'
-        })
       }
     });
   } catch (error) {
