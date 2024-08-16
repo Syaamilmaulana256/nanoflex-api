@@ -12,19 +12,19 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.get('/number', (req: Request, res: Response) => {
-  const add = parseInt(req.query.add as string, 10);
-  const reduce = parseInt(req.query.reduce as string, 10);
+  const plus = parseInt(req.query.plus as string, 10);
+  const minus = parseInt(req.query.minus as string, 10);
 
   try {
-    if (isNaN(add) && isNaN(reduce)) {
+    if (isNaN(plus) && isNaN(minus)) {
       return res.status(404).json({
         status: 'error',
         message: 'Invalid Parameters Value'
       });
     }
 
-    number += add || 0;
-    number -= reduce || 0;
+    number += plus || 0;
+    number -= minus || 0;
 
     res.json({
       status: 'success',
