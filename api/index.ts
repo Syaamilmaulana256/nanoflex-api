@@ -7,11 +7,8 @@ let number = 0;
 
 app.use(express.json());
 
-app.get('/', (req: Request, res: Response) => {
-  res.send("use it then");
-});
 
-app.get('/number', (req: Request, res: Response) => {
+app.get('/api/calc', (req: Request, res: Response) => {
   const plus = parseInt(req.query.plus as string, 10);
   const minus = parseInt(req.query.minus as string, 10);
 
