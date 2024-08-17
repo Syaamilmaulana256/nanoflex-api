@@ -21,8 +21,9 @@ const divided = parseInt(req.query.divided as string, 10);
   try {
     if (isNaN(plus) && isNaN(minus) && isNan(times) && isNan(divided)) {
       return res.status(404).json([{
-        status: 'error',
-        message: 'Invalid Parameters Value'
+      ok: false,
+      code: '404',
+      message: 'Not found'
       }]);
     }
 
@@ -31,7 +32,8 @@ const divided = parseInt(req.query.divided as string, 10);
 if (cs(plus) == "plus") {
   number += plus || 0;
   res.json([{
-      status: 'success',
+      ok: true,
+      code: '201',
       message: 'Number Increased',
       data: {
         number: number,
@@ -40,7 +42,8 @@ if (cs(plus) == "plus") {
 } else if (cs(minus) == "minus") {
   number -= minus || 0;
   res.json([{
-      status: 'success',
+      ok: true,
+      code: '201',
       message: 'Number Decreased',
       data: {
         number: number,
@@ -49,7 +52,8 @@ if (cs(plus) == "plus") {
 } else if (cs(times) == "times") {
   number *= times || 0;
   res.json([{
-      status: 'success',
+      ok: true,
+      code: '201',
       message: 'Number Times',
       data: {
         number: number,
@@ -58,7 +62,8 @@ if (cs(plus) == "plus") {
 } else if (cs(divided) == "divided") {
   number /= times || 0;
   res.json([{
-      status: 'success',
+      ok: true,
+      code: '201',
       message: 'Number Divided',
       data: {
         number: number,
@@ -67,15 +72,16 @@ if (cs(plus) == "plus") {
 }
   } catch (error) {
     if (error.message === 'Invalid Parameters') {
-      return res.status(400).json([{
-        status: 'error',
-        message: error.message
-      }]);
+    return res.status(400).json([{   
+      ok: false,
+      code: '400',
+      message: error.message
+      });
     } else {
       console.error(error);
       return res.status(500).json([{
-        status: 'error',
-        message: 'Internal Server Error'
+        code: '500',
+        message: 'Internal server error'
       }]);
     }
   }
