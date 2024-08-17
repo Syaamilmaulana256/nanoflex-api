@@ -11,9 +11,10 @@ app.use(express.json());
 app.get('/api/calc', (req: Request, res: Response) => {
   const plus = parseInt(req.query.plus as string, 10);
   const minus = parseInt(req.query.minus as string, 10);
-
+  const times = parseInt(req.query.times as string, 10);
+const divided = parseInt(req.query.divided as string, 10);
   try {
-    if (isNaN(plus) && isNaN(minus)) {
+    if (isNaN(plus) && isNaN(minus) && isNan(times) && isNan(divided)) {
       return res.status(404).json([{
         status: 'error',
         message: 'Invalid Parameters Value'
