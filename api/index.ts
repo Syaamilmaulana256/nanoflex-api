@@ -7,17 +7,12 @@ let number = 0;
 
 app.use(express.json());
 
-
-function cs(obj : { name: string }): void {
-  const object = Object.keys(obj.name);
-const keys = object.map(key => `"${object}"`).join(', ');
-return keys
-}
 app.get('/api/calc', (req: Request, res: Response) => {
   const plus = parseInt(req.query.plus as string, 10);
   const minus = parseInt(req.query.minus as string, 10);
   const times = parseInt(req.query.times as string, 10);
-const divided = parseInt(req.query.divided as string, 10);
+  
+    const divided = parseInt(req.query.divided as string, 10);
   try {
     if (isNaN(plus) && isNaN(minus) && isNan(times) && isNan(divided)) {
       return res.status(404).json([{
@@ -26,10 +21,7 @@ const divided = parseInt(req.query.divided as string, 10);
       message: 'Not found'
       }]);
     }
-
-            
-        
-if (cs(plus) == "plus") {
+if (Object.keys(plus).map(key => `"${object}"`).join(', ') == "plus") {
   number += plus || 0;
   res.json([{
       ok: true,
@@ -39,7 +31,7 @@ if (cs(plus) == "plus") {
         number: number,
       }
     }]);
-} else if (cs(minus) == "minus") {
+} else if (Object.keys(minus).map(key => `"${object}"`).join(', ') == "minus") {
   number -= minus || 0;
   res.json([{
       ok: true,
@@ -49,7 +41,7 @@ if (cs(plus) == "plus") {
         number: number,
       }
     }]);
-} else if (cs(times) == "times") {
+} else if (Object.keys(times).map(key => `"${object}"`).join(', ') == "times") {
   number *= times || 0;
   res.json([{
       ok: true,
@@ -59,7 +51,7 @@ if (cs(plus) == "plus") {
         number: number,
       }
     }]);
-} else if (cs(divided) == "divided") {
+} else if (Object.keys(divided).map(key => `"${object}"`).join(', ') == "divided") {
   number /= times || 0;
   res.json([{
       ok: true,
