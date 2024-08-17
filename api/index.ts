@@ -8,8 +8,8 @@ let number = 0;
 app.use(express.json());
 
 
-function cs(input: string) void {
-  const object = Object.keys(input);
+function cs(obj : { name: string }): void {
+  const object = Object.keys(obj.name);
 const keys = object.map(key => `"${object}"`).join(', ');
 return keys
 }
