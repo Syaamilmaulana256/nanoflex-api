@@ -26,13 +26,11 @@ const divided = parseInt(req.query.divided as string, 10);
       }]);
     }
 
-    number += plus || 0;
-    number -= minus || 0;
-    number *= times || 0;
-    number /= times || 0;
-    
+            
+        
 if (cs(plus) == "plus") {
-    res.json([{
+  number += plus || 0;
+  res.json([{
       status: 'success',
       message: 'Number Increased',
       data: {
@@ -40,6 +38,7 @@ if (cs(plus) == "plus") {
       }
     }]);
 } else if (cs(minus) == "minus") {
+  number -= minus || 0;
   res.json([{
       status: 'success',
       message: 'Number Decreased',
@@ -48,6 +47,7 @@ if (cs(plus) == "plus") {
       }
     }]);
 } else if (cs(times) == "times") {
+  number *= times || 0;
   res.json([{
       status: 'success',
       message: 'Number Times',
@@ -56,6 +56,7 @@ if (cs(plus) == "plus") {
       }
     }]);
 } else if (cs(divided) == "divided") {
+  number /= times || 0;
   res.json([{
       status: 'success',
       message: 'Number Divided',
