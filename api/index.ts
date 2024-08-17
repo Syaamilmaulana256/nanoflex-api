@@ -14,34 +14,34 @@ app.get('/api/calc', (req: Request, res: Response) => {
 
   try {
     if (isNaN(plus) && isNaN(minus)) {
-      return res.status(404).json({
+      return res.status(404).json([{
         status: 'error',
         message: 'Invalid Parameters Value'
-      });
+      }]);
     }
 
     number += plus || 0;
     number -= minus || 0;
 
-    res.json({
+    res.json([{
       status: 'success',
       message: 'Number Modified',
       data: {
         number: number,
       }
-    });
+    }]);
   } catch (error) {
     if (error.message === 'Invalid Parameters') {
-      return res.status(400).json({
+      return res.status(400).json([{
         status: 'error',
         message: error.message
-      });
+      }]);
     } else {
       console.error(error);
-      return res.status(500).json({
+      return res.status(500).json([{
         status: 'error',
         message: 'Internal Server Error'
-      });
+      }]);
     }
   }
 });
