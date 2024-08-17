@@ -7,11 +7,8 @@ let number = 0;
 
 app.use(express.json());
 
-interface data {
-  qn: string
-}
 
-function cs(input: data) void {
+function cs(input: string) void {
   const object = Object.keys(input);
 const keys = object.map(key => `"${object}"`).join(', ');
 return keys
