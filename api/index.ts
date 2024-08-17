@@ -1,81 +1,63 @@
 import express, { Express, Request, Response } from 'express';
 
 const app: Express = express();
-const port = 3000;
+const port = process.env.PORT || 3000; // Use environment variable for port
 
 let number = 0;
 
 app.use(express.json());
 
 app.get('/api/calc', (req: Request, res: Response) => {
-  const plus = parseInt(req.query.plus as string, 10);
-  const minus = parseInt(req.query.minus as string, 10);
-  const times = parseInt(req.query.times as string, 10);
-  
-    const divided = parseInt(req.query.divided as string, 10);
   try {
-    if (isNaN(plus) && isNaN(minus) && isNan(times) && isNan(divided)) {
-      return res.status(404).json([{
-      ok: false,
-      code: '404',
-      message: 'Not found'
-      }]);
+    // Validate input parameters:
+    const { plus, minus, times, divided } = req.query as { plus?: number; minus?: number; times?: number; divided?: number };
+
+    if (!plus && !minus && !times && !divided) {
+      return res.status(404).json([{ ok: false, code: '404', message: 'Operation not specified' }]);
     }
-if (Object.keys(plus).map(key => `"${object}"`).join(', ') == "plus") {
-  number += plus || 0;
-  res.json([{
+
+    const operation = Object.keys(req.query).find((key) => key !== 'undefined'); // Find valid operation key
+    if (!operation) {
+      return res.status(400).json([{ ok: false, code: '400', message: 'Invalid operation parameter' }]);
+    }
+
+    const value = parseInt(req.query[operation] as string, 10); // Get and parse value for the operation
+
+    if (isNaN(value)) {
+      return res.status(400).json([{ ok: false, code: '400', message: 'Invalid value for operation' }]);
+    }
+
+    // Perform calculation based on operation:
+    switch (operation) {
+      case 'plus':
+        number += value;
+        break;
+      case 'minus':
+        number -= value;
+        break;
+      case 'times':
+        number *= value;
+        break;
+      case 'divided':
+        if (value === 0) {
+          return res.status(400).json([{ ok: false, code: '400', message: 'Division by zero' }]);
+        }
+        number /= value;
+        break;
+      default:
+        // Handle unexpected operation (should not happen due to validation)
+        return res.status(500).json([{ ok: false, code: '500', message: 'Internal server error' }]);
+    }
+
+    res.json([{
       ok: true,
-      code: '201',
-      message: 'Number Increased',
-      data: {
-        number: number,
-      }
+      code: '200', // Use 200 for successful operation
+      message: `Number ${operation}`,
+      data: { number },
     }]);
-} else if (Object.keys(minus).map(key => `"${object}"`).join(', ') == "minus") {
-  number -= minus || 0;
-  res.json([{
-      ok: true,
-      code: '201',
-      message: 'Number Decreased',
-      data: {
-        number: number,
-      }
-    }]);
-} else if (Object.keys(times).map(key => `"${object}"`).join(', ') == "times") {
-  number *= times || 0;
-  res.json([{
-      ok: true,
-      code: '201',
-      message: 'Number Times',
-      data: {
-        number: number,
-      }
-    }]);
-} else if (Object.keys(divided).map(key => `"${object}"`).join(', ') == "divided") {
-  number /= times || 0;
-  res.json([{
-      ok: true,
-      code: '201',
-      message: 'Number Divided',
-      data: {
-        number: number,
-      }
-    }]);
-}
   } catch (error) {
-    if (error.message === 'Invalid Parameters') {
-    return res.status(400).json([{   
-      ok: false,
-      code: '400',
-      message: error.message
-      });
-    } else {
-      console.error(error);
-      return res.status(500).json([{
-        code: '500',
-        message: 'Internal server error'
-      }]);
-    }
+    console.error(error);
+    res.status(500).json([{ ok: false, code: '500', message: 'Internal server error' }]);
   }
 });
 
