@@ -4,6 +4,7 @@ body {
     padding: 0;
     background: #f0f4f8;
     color: #333;
+    scroll-behavior: smooth;
 }
 
 nav {
@@ -13,6 +14,9 @@ nav {
     padding: 1rem 2rem;
     background-color: #0066ff;
     color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 nav .logo {
@@ -43,9 +47,13 @@ nav ul li a:hover {
 
 header {
     text-align: center;
-    padding: 4rem 2rem;
+    padding: 6rem 2rem;
     background: linear-gradient(135deg, #0066ff, #33ccff);
     color: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     animation: fadeIn 1.5s ease-in;
 }
 
@@ -118,6 +126,30 @@ section input {
     margin-bottom: 1rem;
     border: 1px solid #ccc;
     padding: 0.5rem;
+}
+
+.result {
+    border: 1px solid #ccc;
+    padding: 10px;
+    min-height: 100px;
+    margin-top: 20px;
+    white-space: pre;
+    text-align: left;
+    font-size: 1rem;
+}
+
+.result.success {
+    background-color: #e0ffe0;
+    border-color: #00cc00;
+}
+
+.result.error {
+    background-color: #ffe0e0;
+    border-color: #ff0000;
+}
+
+.result code {
+    font-size: 1rem;
 }
 
 footer {
