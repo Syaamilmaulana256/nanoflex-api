@@ -6,7 +6,9 @@
     <title>Aura API</title>
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="./src/styles/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <nav>
@@ -32,9 +34,15 @@
 
     <section id="try-now">
         <h2>Cobalah Sekarang</h2>
-        <p>Masukkan query Anda di bawah ini untuk mencoba Aura API.</p>
-        <input type="text" placeholder="Masukkan query...">
-        <button class="try-btn">Coba Sekarang</button>
+        <p>Masukkan URL endpoint untuk mencoba Aura API.</p>
+        <div>
+            <label for="url">URL:</label>
+            <input type="text" id="url" placeholder="https://api.example.com/data" style="width: 100%; padding: 5px; margin: 10px 0;">
+        </div>
+
+        <button id="sendRequest" class="try-btn">Coba Sekarang</button>
+
+        <div class="result" id="result"></div>
     </section>
 
     <section id="about">
@@ -46,6 +54,9 @@
         <p>Project ini adalah open-source. <a href="https://github.com/your-repo">Lihat di GitHub</a></p>
     </footer>
 
-    <script src="./src/scripts/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
