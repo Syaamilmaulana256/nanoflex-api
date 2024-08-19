@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     const ctaBtn = document.querySelector(".cta-btn");
-
+    
     ctaBtn.addEventListener("click", function() {
         document.querySelector('#documentation').scrollIntoView({ 
             behavior: 'smooth' 
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Event Listener for "Cobalah Sekarang" section
     const sendRequestBtn = document.getElementById('sendRequest');
     const resultDiv = document.getElementById('result');
-
+  
     sendRequestBtn.addEventListener('click', function() {
         const url = document.getElementById('url').value;
 
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (result.status >= 200 && result.status < 300) {
                 resultDiv.classList.remove('error');
                 resultDiv.classList.add('success');
-                resultDiv.innerHTML = `<code>${JSON.stringify(result.data, null, 2)}</code>`;
+                resultDiv.innerHTML = `${JSON.stringify(result.data, null, 2)}`;
             } else {
                 throw new Error(`Error ${result.status}: ${JSON.stringify(result.data)}`);
             }
