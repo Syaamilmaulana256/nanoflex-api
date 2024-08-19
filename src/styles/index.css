@@ -1,0 +1,142 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f0f4f8;
+    color: #333;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #0066ff;
+    color: white;
+}
+
+nav .logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #b3d1ff;
+}
+
+header {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #0066ff, #33ccff);
+    color: white;
+    animation: fadeIn 1.5s ease-in;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+header p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+header .cta-btn {
+    font-family: 'Oxanium', cursive;
+    padding: 0.75rem 1.5rem;
+    background-color: white;
+    color: #0066ff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+header .cta-btn:hover {
+    background-color: #b3d1ff;
+}
+
+section {
+    padding: 3rem 2rem;
+    text-align: center;
+    animation: fadeIn 1.5s ease-in;
+}
+
+section h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #0066ff;
+}
+
+section p {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+section button, section input {
+    font-family: 'Oxanium', cursive;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    margin-top: 1rem;
+}
+
+section .doc-btn, section .try-btn {
+    background-color: #0066ff;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+section .doc-btn:hover, section .try-btn:hover {
+    background-color: #b3d1ff;
+}
+
+section input {
+    width: 60%;
+    max-width: 300px;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+}
+
+footer {
+    background-color: #0066ff;
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+}
+
+footer p {
+    margin: 0;
+}
+
+footer a {
+    color: white;
+    text-decoration: underline;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
