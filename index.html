@@ -1,15 +1,51 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aura API</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="stylesheet" href="./src/styles/style.css">
-  </head>
-  <body>
-    <h1>Aura API</h1>
-    <br>
-    <button onclick="rtc()">Test</button>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="./src/scripts/script.js"></script>
-  </body>
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="./src/styles/index.css">
+</head>
+<body>
+    <nav>
+        <div class="logo">Aura API</div>
+        <ul>
+            <li><a href="#documentation">Dokumentasi</a></li>
+            <li><a href="#try-now">Cobalah Sekarang</a></li>
+            <li><a href="#about">Tentang</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>Welcome to Aura API</h1>
+        <p>API sederhana dengan performa cepat untuk kebutuhan modern Anda.</p>
+        <button class="cta-btn">Get Started</button>
+    </header>
+
+    <section id="documentation">
+        <h2>Dokumentasi</h2>
+        <p>Temukan semua informasi yang Anda butuhkan untuk menggunakan Aura API dengan mudah dan efektif.</p>
+        <button class="doc-btn">Lihat Dokumentasi</button>
+    </section>
+
+    <section id="try-now">
+        <h2>Cobalah Sekarang</h2>
+        <p>Masukkan query Anda di bawah ini untuk mencoba Aura API.</p>
+        <input type="text" placeholder="Masukkan query...">
+        <button class="try-btn">Coba Sekarang</button>
+    </section>
+
+    <section id="about">
+        <h2>Tentang Aura API</h2>
+        <p>Aura API adalah API sederhana dan cepat yang didesain untuk pengembang modern. Kami berkomitmen untuk memberikan performa terbaik dengan antarmuka yang mudah digunakan.</p>
+    </section>
+
+    <footer>
+        <p>Project ini adalah open-source. <a href="https://github.com/your-repo">Lihat di GitHub</a></p>
+    </footer>
+
+    <script src="./src/scripts/index.js"></script>
+</body>
 </html>
