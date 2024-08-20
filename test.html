@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Validation Example</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .input-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .input-container input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+        .input-container input.error {
+            border-color: #ff0000;
+        }
+        .error-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #ff0000;
+            visibility: hidden;
+        }
+        .error-message {
+            color: #ff0000;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+        .input-container input.error + .error-icon {
+            visibility: visible;
+        }
+        .input-container input.error ~ .error-message {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <form id="url-form">
+        <div class="input-container">
+            <label for="url-input">URL:</label>
+            <input type="text" id="url-input" name="url-input" placeholder="https://example.com/">
+            <span class="material-icons error-icon">error</span>
+            <div id="url-error" class="error-message">URL tidak boleh kosong atau harus dimulai dengan "https://example.com/"!</div>
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/just-validate@2.7.0/dist/just-validate.production.min.js"></script>
+    <script>
+        const validation = new JustValidate('#url-form');
+
+        validation
+            .addField('#url-input', [
+                {
+                    rule: 'required',
+                    errorMessage: 'URL tidak boleh kosong!',
+                },
+                {
+                    rule: 'customRegexp',
+                    value: /^https:\/\/example\.com\/.*$/,
+                    errorMessage: 'URL harus dimulai dengan "https://example.com/"!',
+                }
+            ])
+            .onSuccess(event => {
+                event.preventDefault();
+                // Tambahkan aksi pada saat validasi sukses
+            });
+    </script>
+</body>
+</html>
