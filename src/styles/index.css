@@ -133,9 +133,11 @@ section input {
     padding: 10px;
     min-height: 100px;
     margin-top: 20px;
-    white-space: pre;
+    white-space: pre-wrap;  /* Mengizinkan teks untuk membungkus ke baris berikutnya */
+    word-wrap: break-word;  /* Memastikan teks panjang dapat terputus dan dibungkus */
     text-align: left;
     font-size: 1rem;
+    overflow-wrap: break-word; /* Opsi tambahan untuk kompatibilitas */
 }
 
 .result.success {
