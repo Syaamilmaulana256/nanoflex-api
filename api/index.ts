@@ -1,7 +1,7 @@
 import express, { Express, Request, Response } from 'express';
 
 const app: Express = express();
-const port = process.env.PORT || 3000; // Use environment variable for port
+const port = 3000; // Use environment variable for port
 
 let number = 0;
 
