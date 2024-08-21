@@ -4,7 +4,7 @@ const app: Express = express();
 const port = 3000; // Use environment variable for port
 
 let number = 0;
-
+let op;
 app.use(express.json());
 
 app.get('/api/calc', (req: Request, res: Response) => {
@@ -48,11 +48,19 @@ app.get('/api/calc', (req: Request, res: Response) => {
         // Handle unexpected operation (should not happen due to validation)
         return res.status(500).json([{ ok: false, code: '500', message: 'Internal server error' }]);
     }
-
+if (`${operation} === plus`) {
+  op = "Increased"
+} else if (`${operation} === minus`) {
+  op = "Decreased"
+} else if (`${operation} === times`) {
+  op = "Multiple Increased"
+} else if (`${operation} === divide`) {
+  op = "Multiple Decreased"
+}
     res.json([{
       ok: true,
       code: '200', // Use 200 for successful operation
-      message: `Number ${operation}`,
+      message: "Number " + op,
       data: { number },
     }]);
   } catch (error) {
