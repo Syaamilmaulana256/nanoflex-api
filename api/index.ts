@@ -29,16 +29,16 @@ app.get('/api/calc', (req: Request, res: Response) => {
 
     // Perform calculation based on operation:
     switch (operation) {
-      case 'Increased':
+      case 'plus':
         number += value;
         break;
-      case 'Decreased':
+      case 'minus':
         number -= value;
         break;
-      case 'Multiple Increased':
+      case 'times':
         number *= value;
         break;
-      case 'Multiple Decreased':
+      case 'divided':
         if (value === 0) {
           return res.status(400).json([{ ok: false, code: '400', message: 'Division by zero' }]);
         }
