@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
-import routes from './routes.ts';
+import routes from './routes';
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -69,7 +69,7 @@ app.get('/api/calc', (req: Request, res: Response) => {
       message: msg,
       data: { number },
     }]);
-  } catch (error) {
+  } catch (error: uknown) {
     console.error(error);
     res.status(500).json([{ ok: false, code: '500', message: 'Internal server error' }]);
   }
