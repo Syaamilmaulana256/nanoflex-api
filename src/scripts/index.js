@@ -1,4 +1,27 @@
 document.addEventListener("DOMContentLoaded", function() {
+    // Fungsi untuk smooth scroll ke elemen target
+    function scrollToSection(sectionId) {
+        const targetElement = document.querySelector(sectionId);
+        if (targetElement) {
+            targetElement.scrollIntoView({ behavior: "smooth" });
+        }
+    }
+
+    // Cek jika ada hash di URL saat halaman dimuat
+    if (window.location.hash) {
+        scrollToSection(window.location.hash);
+    }
+
+    // Event listener untuk setiap klik link yang mengandung hash
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            const targetSection = this.getAttribute('href');
+            history.pushState(null, null, targetSection);
+            scrollToSection(targetSection);
+        });
+    });
     const ctaBtn = document.querySelector(".cta-btn");
     
     ctaBtn.addEventListener("click", function() {
