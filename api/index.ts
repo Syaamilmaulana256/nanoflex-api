@@ -1,14 +1,16 @@
 import express, { Express, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
+import routes from './routes.ts';
 
 const app: Express = express();
-const port = 3000; // Use environment variable for port
+const port = process.env.PORT || 3000;
 
 let number = 0;
 let msg;
+
 const limiter = rateLimit({
   windowMs: 60000, // 1 minute
-  max: 50, // limit each IP to 100 requests per windowMs
+  max: 50, // limit each IP to 50 requests per windowMs
   message: "([{ ok: false, code: 429, message: 'Too many requests, try again later' }])",
   statusCode: 429,
 });
@@ -16,10 +18,10 @@ const limiter = rateLimit({
 app.use(limiter);
 app.use(express.json());
 
+// Route untuk kalkulasi
 app.get('/api/calc', (req: Request, res: Response) => {
   try {
-    // Validate input parameters:
-    const { add, reduce, multiply, divided } = req.query as { add?: number; reduce?: number; multiply?: number; divided?: number };
+    const { add, reduce, multiply, divided } = req.query as { add?: string; reduce?: string; multiply?: string; divided?: string };
 
     if (!add && !reduce && !multiply && !divided) {
       return res.status(404).json([{ ok: false, code: '404', message: 'Operation not specified' }]);
@@ -40,7 +42,7 @@ app.get('/api/calc', (req: Request, res: Response) => {
     switch (operation) {
       case 'add':
         number += value;
-        msg = "Numbers Increase";
+        msg = "Numbers Increased";
         break;
       case 'reduce':
         number -= value;
@@ -63,7 +65,7 @@ app.get('/api/calc', (req: Request, res: Response) => {
     }
     res.json([{
       ok: true,
-      code: '200', // Use 200 for successful operation
+      code: '200',
       message: msg,
       data: { number },
     }]);
@@ -72,6 +74,10 @@ app.get('/api/calc', (req: Request, res: Response) => {
     res.status(500).json([{ ok: false, code: '500', message: 'Internal server error' }]);
   }
 });
+
+// Tambahkan route untuk download file
+app.use('/api', routes);
+
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
