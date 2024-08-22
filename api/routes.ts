@@ -24,7 +24,8 @@ router.get('/downfile', async (req: Request, res: Response) => {
     }
 
     const blob = await response.blob();
-    const fileBuffer = Buffer.from(await blob.arrayBuffer());
+    const arrayBuffer = await blob.arrayBuffer();
+    const fileBuffer = Buffer.from(arrayBuffer);
     const fileExtension = contentType.split('/')[1];
     const fileName = `downloaded.${fileExtension}`;
     const downloadLink = path.join(__dirname, '..', 'downloads', fileName);
@@ -34,10 +35,12 @@ router.get('/downfile', async (req: Request, res: Response) => {
 
     return res.status(200).json([{ ok: true, code: 200, data: { link: downloadLink, type: filetype } }]);
 
-  } catch (error) {
-    return res.status(500).json([{ ok: false, code: 500, message: `Internal Server Error: ${error.message}` }]);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return res.status(500).json([{ ok: false, code: 500, message: `Internal Server Error: ${error.message}` }]);
+    }
+    return res.status(500).json([{ ok: false, code: 500, message: 'Internal Server Error: An unknown error occurred' }]);
   }
 });
 
 export default router;
-                                   
