@@ -24,8 +24,8 @@ router.get('/downfile', async (req: Request, res: Response) => {
     }
 
     const blob = await response.blob();
-    const arrayBuffer = await blob.arrayBuffer();
-    const fileBuffer = Buffer.from(arrayBuffer);
+    const stream = blob.stream();
+const fileBuffer = await new Response(stream).arrayBuffer();
     const fileExtension = contentType.split('/')[1];
     const fileName = `downloaded.${fileExtension}`;
     const downloadLink = path.join(__dirname, '..', 'downloads', fileName);
