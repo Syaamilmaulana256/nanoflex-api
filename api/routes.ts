@@ -23,14 +23,17 @@ router.get('/downfile', async (req: Request, res: Response) => {
       return res.status(415).json([{ ok: false, code: 415, message: `Invalid file type. Expected: ${filetype}, received: ${contentType}` }]);
     }
 
-    const blob = await response.blob();
-    const stream = blob.stream();
-const fileBuffer = await new Response(stream).arrayBuffer();
+    // Convert response to ArrayBuffer
+    const arrayBuffer = await response.arrayBuffer();
+    
+    // Convert ArrayBuffer to Buffer
+    const fileBuffer = Buffer.from(arrayBuffer);
+    
     const fileExtension = contentType.split('/')[1];
     const fileName = `downloaded.${fileExtension}`;
     const downloadLink = path.join(__dirname, '..', 'downloads', fileName);
 
-    // Simpan file ke server lokal
+    // Save the file to the local server
     await fs.promises.writeFile(downloadLink, fileBuffer);
 
     return res.status(200).json([{ ok: true, code: 200, data: { link: downloadLink, type: filetype } }]);
