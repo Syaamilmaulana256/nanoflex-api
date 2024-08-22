@@ -4,15 +4,15 @@ const app: Express = express();
 const port = 3000; // Use environment variable for port
 
 let number = 0;
-let op;
+let msg;
 app.use(express.json());
 
 app.get('/api/calc', (req: Request, res: Response) => {
   try {
     // Validate input parameters:
-    const { plus, minus, times, divided } = req.query as { plus?: number; minus?: number; times?: number; divided?: number };
+    const { add, reduce, multiply, divided } = req.query as { add?: number; reduce?: number; multiply?: number; divided?: number };
 
-    if (!plus && !minus && !times && !divided) {
+    if (!add && !reduce && !multiply && !divided) {
       return res.status(404).json([{ ok: false, code: '404', message: 'Operation not specified' }]);
     }
 
@@ -29,38 +29,33 @@ app.get('/api/calc', (req: Request, res: Response) => {
 
     // Perform calculation based on operation:
     switch (operation) {
-      case 'plus':
+      case 'add':
         number += value;
+        msg = "Numbers Increase";
         break;
-      case 'minus':
+      case 'reduce':
         number -= value;
+        msg = "Reduced Numbers";
         break;
-      case 'times':
+      case 'multiply':
         number *= value;
+        msg = "Multiplied Numbers";
         break;
       case 'divided':
         if (value === 0) {
           return res.status(400).json([{ ok: false, code: '400', message: 'Division by zero' }]);
         }
         number /= value;
+        msg = "Divided Numbers";
         break;
       default:
         // Handle unexpected operation (should not happen due to validation)
         return res.status(500).json([{ ok: false, code: '500', message: 'Internal server error' }]);
     }
-if (`${operation} === plus`) {
-  op = "Increased"
-} else if (`${operation} === minus`) {
-  op = "Decreased"
-} else if (`${operation} === times`) {
-  op = "Multiple Increased"
-} else if (`${operation} === divide`) {
-  op = "Multiple Decreased"
-}
     res.json([{
       ok: true,
       code: '200', // Use 200 for successful operation
-      message: "Number " + op,
+      message: msg,
       data: { number },
     }]);
   } catch (error) {
