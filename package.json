@@ -1,0 +1,20 @@
+{
+  "name": "aura/api",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-rate-limit": "^5.1.3",
+    "node-fetch": "^2.6.1",
+    "@vercel/analytics": "^1.3.1",
+    "@vercel/speed-insights": "^1.0.12"
+  },
+  "devDependencies": {
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3"
+  }
+}
