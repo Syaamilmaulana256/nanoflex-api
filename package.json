@@ -14,7 +14,7 @@
     "@vercel/speed-insights": "^1.0.12"
   },
   "devDependencies": {
-    "ts-node": "^9.1.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   }
 }
