@@ -43,10 +43,10 @@
         <p>Masukkan URL endpoint untuk mencoba Aura API.</p>
         <div>
             <label for="url">URL:</label>
-            <input type="text" id="url" placeholder="https://aura-api-taupe.vercel.app/api/calc" style="width: 100%; padding: 5px; margin: 10px 0;">
+            <input type="url" id="url" placeholder="https://aura-api-taupe.vercel.app/api/calc" required>
         </div>
 
-        <button id="sendRequest" class="try-btn">Coba Sekarang</button>
+        <button id="sendRequest" class="try-btn" disabled>Coba Sekarang</button>
 
         <div class="result" id="result"></div>
     </section>
@@ -60,6 +60,6 @@
         <p>Project ini adalah open-source. <a href="https://github.com/Syaamilmaulana256/aura-api">Lihat di GitHub</a></p>
     </footer>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script type="module" src="./src/scripts/index.js"></script>
+    <script src="./src/scripts/index.js"></script>
 </body>
 </html>
