@@ -9,11 +9,7 @@ let msg;
 const limiter = rateLimit({
   windowMs: 60000, // 1 minute
   max: 50, // limit each IP to 100 requests per windowMs
-  message: res.json([{
-      ok: false,
-      code: '429',       
-      message: "Too many requests, try again later!"
-    }]),
+  message: "([{ ok: false, code: 429, message: 'Too many requests, try again later' }])",
   statusCode: 429,
 });
 
