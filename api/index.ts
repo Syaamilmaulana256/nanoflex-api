@@ -69,7 +69,7 @@ app.get('/api/calc', (req: Request, res: Response) => {
       message: msg,
       data: { number },
     }]);
-  } catch (error: uknown) {
+  } catch (error: unknown) {
     console.error(error);
     res.status(500).json([{ ok: false, code: '500', message: 'Internal server error' }]);
   }
