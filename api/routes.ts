@@ -5,6 +5,20 @@ import fs from 'fs';
 
 const router = express.Router();
 
+// Tambahkan ini di file utama (misalnya, `index.ts`) atau `routes.ts` Anda
+router.get('/tmp/:filename', (req: Request, res: Response) => {
+  const fileName = req.params.filename;
+  const filePath = path.join('/tmp', fileName);
+
+  fs.access(filePath, fs.constants.F_OK, (err) => {
+    if (err) {
+      return res.status(404).json([{ ok: false, code: 404, message: 'File not found' }]);
+    }
+
+    res.sendFile(filePath);
+  });
+});
+
 router.get('/downfile', async (req: Request, res: Response) => {
   const { url, filetype } = req.query;
 
@@ -34,7 +48,7 @@ router.get('/downfile', async (req: Request, res: Response) => {
     // Simpan file ke direktori sementara
     await fs.promises.writeFile(downloadLink, fileBuffer);
 
-    return res.status(200).json([{ ok: true, code: 200, data: { link: downloadLink, type: filetype } }]);
+    return res.status(200).json([{ ok: true, code: 200, data: { link: `https://aura-api-taupe.vercel.app/api/tmp/${fileName}`, type: filetype } }]);
 
   } catch (error: unknown) {
     if (error instanceof Error) {
