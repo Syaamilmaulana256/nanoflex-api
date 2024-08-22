@@ -1,10 +1,19 @@
 import express, { Express, Request, Response } from 'express';
+import rateLimit from 'express-rate-limit';
 
 const app: Express = express();
 const port = 3000; // Use environment variable for port
 
 let number = 0;
 let msg;
+const limiter = rateLimit({
+  windowMs: 300000, // 5 minutes
+  max: 50, // limit each IP to 100 requests per windowMs
+  message: "Too many requests, try again later",
+  statusCode: 429,
+});
+
+app.use(limiter);
 app.use(express.json());
 
 app.get('/api/calc', (req: Request, res: Response) => {
