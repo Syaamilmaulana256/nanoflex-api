@@ -5,7 +5,7 @@ import fs from 'fs';
 
 const router = express.Router();
 
-router.get('/api/downfile', async (req: Request, res: Response) => {
+router.get('/downfile', async (req: Request, res: Response) => {
   const { url, filetype } = req.query;
 
   if (!url || !filetype) {
