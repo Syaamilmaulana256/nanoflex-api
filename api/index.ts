@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
 import routes from './routes';
+import { dbPromise } from './db/sqlite';
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -27,12 +28,12 @@ app.get('/api/calc', (req: Request, res: Response) => {
       return res.status(404).json([{ ok: false, code: '404', message: 'Operation not specified' }]);
     }
 
-    const operation = Object.keys(req.query).find((key) => key !== 'undefined'); // Find valid operation key
+    const operation = Object.keys(req.query).find((key) => key !== 'undefined');
     if (!operation) {
       return res.status(400).json([{ ok: false, code: '400', message: 'Invalid operation parameter' }]);
     }
 
-    const value = parseInt(req.query[operation] as string, 10); // Get and parse value for the operation
+    const value = parseInt(req.query[operation] as string, 10);
 
     if (isNaN(value)) {
       return res.status(400).json([{ ok: false, code: '400', message: 'Invalid value for operation' }]);
@@ -60,7 +61,6 @@ app.get('/api/calc', (req: Request, res: Response) => {
         msg = "Divided Numbers";
         break;
       default:
-        // Handle unexpected operation (should not happen due to validation)
         return res.status(500).json([{ ok: false, code: '500', message: 'Internal server error' }]);
     }
     res.json([{
@@ -75,9 +75,14 @@ app.get('/api/calc', (req: Request, res: Response) => {
   }
 });
 
-// Tambahkan route untuk download file
+// Tambahkan route untuk file download dan file linker
 app.use('/api', routes);
 
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+// Inisialisasi database
+dbPromise.then(() => {
+  app.listen(port, () => {
+    console.log(`Server listening on port ${port}`);
+  });
+}).catch(err => {
+  console.error("Failed to initialize database:", err);
 });
