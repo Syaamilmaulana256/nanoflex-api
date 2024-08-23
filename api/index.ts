@@ -81,8 +81,8 @@ app.use('/api', routes);
 // Inisialisasi database
 dbPromise.then(() => {
   app.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
-  });
-}).catch(err => {
-  console.error("Failed to initialize database:", err);
+  console.log(`Server listening on port ${port}`);
+}).catch((err: Error) => {
+  console.error("Failed to initialize database:", err.message);
 });
+
