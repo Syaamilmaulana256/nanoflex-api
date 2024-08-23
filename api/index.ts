@@ -78,11 +78,13 @@ app.get('/api/calc', (req: Request, res: Response) => {
 // Tambahkan route untuk file download dan file linker
 app.use('/api', routes);
 
-// Inisialisasi database
-dbPromise.then(() => {
-  app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-}).catch((err: Error) => {
-  console.error("Failed to initialize database:", err.message);
-});
-      })
+// Inisialisasi database dan server
+dbPromise
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`Server listening on port ${port}`);
+    });
+  })
+  .catch((err: Error) => {
+    console.error("Failed to initialize database:", err.message);
+  });
