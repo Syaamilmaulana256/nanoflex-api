@@ -107,11 +107,13 @@ router.get('/filelinker', async (req: Request, res: Response) => {
         deleted: oneYearLater.toISOString() 
       } 
     }]);
-
-  } catch (error) {
+ 
+} catch (error: unknown) {
+  if (error instanceof Error) {
     return res.status(500).json([{ ok: false, code: 500, message: `Internal Server Error: ${error.message}` }]);
   }
+  return res.status(500).json([{ ok: false, code: 500, message: 'Internal Server Error: An unknown error occurred' }]);
+}
 });
-
 export default router;
         
