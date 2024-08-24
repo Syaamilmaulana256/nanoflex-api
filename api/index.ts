@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
-import routes from './routes';
+// import routes from './routes';
 import { dbPromise } from './db/sqlite';
 
 const app: Express = express();
@@ -76,7 +76,7 @@ app.get('/api/calc', (req: Request, res: Response) => {
 });
 
 // Tambahkan route untuk file download dan file linker
-app.use('/api', routes);
+// app.use('/api', routes);
 
 // Inisialisasi database dan server
 dbPromise
