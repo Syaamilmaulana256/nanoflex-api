@@ -1,7 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
 // import routes from './routes';
-import { dbPromise } from './db/sqlite';
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -78,13 +77,6 @@ app.get('/api/calc', (req: Request, res: Response) => {
 // Tambahkan route untuk file download dan file linker
 // app.use('/api', routes);
 
-// Inisialisasi database dan server
-dbPromise
-  .then(() => {
     app.listen(port, () => {
       console.log(`Server listening on port ${port}`);
     });
-  })
-  .catch((err: Error) => {
-    console.error("Failed to initialize database:", err.message);
-  });
