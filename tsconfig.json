@@ -5,8 +5,7 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "typeRoots": ["./node_modules/@types", "./api/types"]
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["./**/*"],
   "exclude": ["node_modules"]
