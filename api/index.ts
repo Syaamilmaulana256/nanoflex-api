@@ -3,7 +3,7 @@ import rateLimit from 'express-rate-limit';
 import routes from './routes';
 
 const app: Express = express();
-const port = process.env.PORT || 3000;
+const port = 3000;
 
 let number = 0;
 let msg;
@@ -11,7 +11,7 @@ let msg;
 const limiter = rateLimit({
   windowMs: 60000, // 1 minute
   max: 50, // limit each IP to 50 requests per windowMs
-  message: "([{ ok: false, code: 429, message: 'Too many requests, try again later' }])",
+  message: "Too many requests, try again later!",
   statusCode: 429,
 });
 
@@ -74,7 +74,7 @@ app.get('/api/calc', (req: Request, res: Response) => {
   }
 });
 
-// Tambahkan route untuk file download dan file linker
+// Tambahkan route untuk file download
 app.use('/api', routes);
 
     app.listen(port, () => {
