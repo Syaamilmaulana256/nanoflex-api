@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
-// import routes from './routes';
+import routes from './routes';
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -75,7 +75,7 @@ app.get('/api/calc', (req: Request, res: Response) => {
 });
 
 // Tambahkan route untuk file download dan file linker
-// app.use('/api', routes);
+app.use('/api', routes);
 
     app.listen(port, () => {
       console.log(`Server listening on port ${port}`);
