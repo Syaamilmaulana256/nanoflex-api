@@ -3,10 +3,12 @@ import rateLimit from 'express-rate-limit';
 import routes from './routes';
 
 const app: Express = express();
-const port = 3000;
 
-let number = 0;
-let msg;
+// Inisialisasi number sebagai variabel request-scoped
+app.use((req: Request, res: Response, next) => {
+  res.locals.number = 0;
+  next();
+});
 
 const limiter = rateLimit({
   windowMs: 60000, // 1 minute
@@ -38,25 +40,27 @@ app.get('/api/calc', (req: Request, res: Response) => {
       return res.status(400).json([{ ok: false, code: '400', message: 'Invalid value for operation' }]);
     }
 
+    let msg: string;
+
     // Perform calculation based on operation:
     switch (operation) {
       case 'add':
-        number += value;
+        res.locals.number += value;
         msg = "Numbers Increased";
         break;
       case 'reduce':
-        number -= value;
+        res.locals.number -= value;
         msg = "Reduced Numbers";
         break;
       case 'multiply':
-        number *= value;
+        res.locals.number *= value;
         msg = "Multiplied Numbers";
         break;
       case 'divided':
         if (value === 0) {
           return res.status(400).json([{ ok: false, code: '400', message: 'Division by zero' }]);
         }
-        number /= value;
+        res.locals.number /= value;
         msg = "Divided Numbers";
         break;
       default:
@@ -66,7 +70,7 @@ app.get('/api/calc', (req: Request, res: Response) => {
       ok: true,
       code: '200',
       message: msg,
-      data: { number },
+      data: { number: res.locals.number },
     }]);
   } catch (error: unknown) {
     console.error(error);
@@ -77,6 +81,5 @@ app.get('/api/calc', (req: Request, res: Response) => {
 // Tambahkan route untuk file download
 app.use('/api', routes);
 
-    app.listen(port, () => {
-      console.log(`Server listening on port ${port}`);
-    });
+// Export the Express app as a serverless function handler
+module.exports = app;
