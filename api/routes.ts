@@ -1,21 +1,22 @@
 import express, { Request, Response } from 'express';
 import fetch from 'node-fetch';
 import path from 'path';
-import fs from 'fs';
+import { writeFile } from 'fs/promises';
+import { existsSync } from 'fs';
 const router = express.Router();
+
+const TMP_DIR = '/tmp'; // Vercel mengizinkan penulisan ke /tmp
 
 // Route untuk mengakses file yang diunduh
 router.get('/tmp/:filename', (req: Request, res: Response) => {
   const fileName = req.params.filename;
-  const filePath = path.join(__dirname, '..', 'tmp', fileName);
+  const filePath = path.join(TMP_DIR, fileName);
 
-  fs.access(filePath, fs.constants.F_OK, (err) => {
-    if (err) {
-      return res.status(404).json([{ ok: false, code: 404, message: 'File not found' }]);
-    }
+  if (!existsSync(filePath)) {
+    return res.status(404).json([{ ok: false, code: 404, message: 'File not found' }]);
+  }
 
-    res.sendFile(filePath);
-  });
+  res.sendFile(filePath);
 });
 
 // Route untuk download file
@@ -40,12 +41,12 @@ router.get('/downfile', async (req: Request, res: Response) => {
     const arrayBuffer = await response.arrayBuffer();
     const fileBuffer = Buffer.from(arrayBuffer);
     const fileExtension = contentType.split('/')[1];
-    const fileName = `downloaded.${fileExtension}`;
+    const fileName = `downloaded_${Date.now()}.${fileExtension}`;
     
-    const downloadLink = path.join(__dirname, '..', 'tmp', fileName);
+    const downloadLink = path.join(TMP_DIR, fileName);
 
     // Simpan file ke direktori sementara
-    await fs.promises.writeFile(downloadLink, fileBuffer);
+    await writeFile(downloadLink, fileBuffer);
 
     return res.status(200).json([{ ok: true, code: 200, data: { link: `https://aura-api-taupe.vercel.app/api/tmp/${fileName}`, type: filetype } }]);
 
@@ -57,5 +58,4 @@ router.get('/downfile', async (req: Request, res: Response) => {
   }
 });
 
- export default router;
-        
+export default router;
