@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
-import routes from './routes';
+// import routes from './routes';
 
 const app: Express = express();
 
@@ -79,7 +79,7 @@ app.get('/api/calc', (req: Request, res: Response) => {
 });
 
 // Tambahkan route untuk file download
-app.use('/api', routes);
+// app.use('/api', routes);
 
 // Export the Express app as a serverless function handler
 module.exports = app;
