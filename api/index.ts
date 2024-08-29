@@ -1,5 +1,4 @@
 import express, { Express, Request, Response } from 'express';
-// import routes from './routes';
 
 const app: Express = express();
 
@@ -68,9 +67,4 @@ app.get('/api/calc', (req: Request, res: Response) => {
     res.status(500).json([{ ok: false, code: '500', message: 'Internal server error' }]);
   }
 });
-
-// Tambahkan route untuk file download
-// app.use('/api', routes);
-
-// Export the Express app as a serverless function handler
 
