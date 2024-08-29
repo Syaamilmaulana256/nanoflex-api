@@ -2,11 +2,7 @@ import express, { Express, Request, Response } from 'express';
 
 const app: Express = express();
 
-// Inisialisasi number sebagai variabel request-scoped
-app.use((req: Request, res: Response, next) => {
-  res.locals.number = 0;
-  next();
-});
+let number = 0;
 
 app.use(express.json());
 
@@ -30,27 +26,27 @@ app.get('/api/calc', (req: Request, res: Response) => {
       return res.status(400).json([{ ok: false, code: '400', message: 'Invalid value for operation' }]);
     }
 
-    let msg: string;
+    let msg;
 
     // Perform calculation based on operation:
     switch (operation) {
       case 'add':
-        res.locals.number += value;
+        number += value;
         msg = "Numbers Increased";
         break;
       case 'reduce':
-        res.locals.number -= value;
+        number -= value;
         msg = "Reduced Numbers";
         break;
       case 'multiply':
-        res.locals.number *= value;
+        number *= value;
         msg = "Multiplied Numbers";
         break;
       case 'divided':
         if (value === 0) {
           return res.status(400).json([{ ok: false, code: '400', message: 'Division by zero' }]);
         }
-        res.locals.number /= value;
+        number /= value;
         msg = "Divided Numbers";
         break;
       default:
@@ -60,7 +56,7 @@ app.get('/api/calc', (req: Request, res: Response) => {
       ok: true,
       code: '200',
       message: msg,
-      data: { number: res.locals.number },
+      data: { number: number },
     }]);
   } catch (error: unknown) {
     console.error(error);
