@@ -1,4 +1,5 @@
 import express, { Express, Request, Response } from 'express';
+import { VercelRequest, VercelResponse } from '@vercel/node';
 
 const app: Express = express();
 
@@ -64,3 +65,6 @@ app.get('/api/calc', (req: Request, res: Response) => {
   }
 });
 
+export default function handler(req: VercelRequest, res: VercelResponse) {
+  app(req, res);
+}
