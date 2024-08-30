@@ -65,6 +65,8 @@ app.get('/api/calc', (req: Request, res: Response) => {
   }
 });
 
+app.use('/api', routes);
+
 export default function handler(req: VercelRequest, res: VercelResponse) {
   app(req, res);
 }
