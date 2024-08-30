@@ -1,7 +1,6 @@
 import express, { Express, Request, Response } from 'express';
-import { VercelRequest, VercelResponse } from '@vercel/node';
+import serverless from 'serverless-http';
 import routes from './routes';
-
 const app: Express = express();
 
 let number = 0;
@@ -65,12 +64,6 @@ app.get('/api/calc', (req: Request, res: Response) => {
     res.status(500).json([{ ok: false, code: '500', message: 'Internal server error' }]);
   }
 });
-
 app.use('/api', routes);
-
 // Vercel serverless function handler
-export default (req: VercelRequest, res: VercelResponse) => {
-  return new Promise<void>((resolve) => {
-    app(req as any, res as any, () => resolve());
-  });
-};
+export const handler = serverless(app);
