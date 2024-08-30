@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import { VercelRequest, VercelResponse } from '@vercel/node';
-
+import routes from './routes';
 const app: Express = express();
 
 let number = 0;
