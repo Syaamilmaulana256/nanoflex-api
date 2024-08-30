@@ -6,8 +6,11 @@
     { "src": "src/**", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/api/calc", "dest": "/api/index.ts" },
+    { "src": "/api/mongo", "dest": "/api/mongo.ts" },
+    { "src": "/api/downfile", "dest": "/api/routes.ts" },
     { "src": "/src/(.*)", "dest": "/src/$1" },
+    { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
