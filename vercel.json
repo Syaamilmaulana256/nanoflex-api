@@ -6,7 +6,7 @@
     { "src": "src/**", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/api/(*.)", "dest": "/api/index.ts" },
+    { "src": "/api/(.*)", "dest": "/api/index.ts" },
     { "src": "/src/(.*)", "dest": "/src/$1" },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
