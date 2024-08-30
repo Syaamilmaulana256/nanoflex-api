@@ -3,11 +3,14 @@ import fetch from 'node-fetch';
 import path from 'path';
 import { writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
-const router = express.Router();
+import { createClient } from '@vercel/blob';  // Import Vercel Blob client
 
+const router = express.Router();
 const TMP_DIR = '/tmp'; // Vercel mengizinkan penulisan ke /tmp
 
-// Route untuk mengakses file yang diunduh
+const blobClient = createClient();  // Initialize Vercel Blob client
+
+// Route untuk mengakses file yang diunduh dari TMP_DIR
 router.get('/tmp/:filename', (req: Request, res: Response) => {
   const fileName = req.params.filename;
   const filePath = path.join(TMP_DIR, fileName);
@@ -19,7 +22,7 @@ router.get('/tmp/:filename', (req: Request, res: Response) => {
   res.sendFile(filePath);
 });
 
-// Route untuk download file
+// Route untuk download file dan menyimpannya di Blob Storage
 router.get('/downfile', async (req: Request, res: Response) => {
   const { url, filetype } = req.query;
 
@@ -48,7 +51,24 @@ router.get('/downfile', async (req: Request, res: Response) => {
     // Simpan file ke direktori sementara
     await writeFile(downloadLink, fileBuffer);
 
-    return res.status(200).json([{ ok: true, code: 200, data: { link: `https://aura-api-taupe.vercel.app/api/tmp/${fileName}`, type: filetype } }]);
+    // Upload file ke Blob Storage Vercel
+    const blobUpload = await blobClient.upload({
+      path: fileName,  // Nama file
+      data: fileBuffer,  // Data file sebagai buffer
+      contentType: contentType,  // Tipe konten file
+    });
+
+    // Hapus file dari TMP_DIR jika tidak diperlukan lagi
+    // await fs.promises.unlink(downloadLink);
+
+    return res.status(200).json([{
+      ok: true,
+      code: 200,
+      data: {
+        link: blobUpload.url,  // URL ke file di Blob Storage
+        type: filetype,
+      },
+    }]);
 
   } catch (error: unknown) {
     if (error instanceof Error) {
