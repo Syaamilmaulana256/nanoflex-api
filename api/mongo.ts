@@ -1,5 +1,5 @@
 // db/mongo.ts
-import { MongoClient } from 'mongodb';
+import { MongoClient, Db } from 'mongodb';
 
 const uri = "mongodb+srv://syaamilmaulana2755:klhYSiYsaWOMZh7v@cluster0.c3icm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 const client = new MongoClient(uri);
