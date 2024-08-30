@@ -7,7 +7,7 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
     "typeRoots": ["./src/vercel.blob.d.ts", "node_modules/@types"]
   },
   "include": ["./**/*"],
