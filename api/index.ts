@@ -1,14 +1,14 @@
 import express, { Express, Request, Response } from 'express';
 import { VercelRequest, VercelResponse } from '@vercel/node';
+import { EdgeConfig } from '@vercel/edge-config'; // Import EdgeConfig client
 
 const app: Express = express();
-
-let number = 0;
-
 app.use(express.json());
 
-// Route untuk kalkulasi
-app.get('/api/calc', (req: Request, res: Response) => {
+const edgeConfig = new EdgeConfig(process.env.EDGE.CONFIG);
+
+// Route for calculation
+app.get('/api/calc', async (req: Request, res: Response) => {
   try {
     const { add, reduce, multiply, divided } = req.query as { add?: string; reduce?: string; multiply?: string; divided?: string };
 
@@ -25,6 +25,12 @@ app.get('/api/calc', (req: Request, res: Response) => {
 
     if (isNaN(value)) {
       return res.status(400).json([{ ok: false, code: '400', message: 'Invalid value for operation' }]);
+    }
+
+    // Retrieve current number from Edge Config
+    let number = await edgeConfig.get('number');
+    if (number === undefined) {
+      number = 0; // Default to 0 if not set
     }
 
     let msg;
@@ -53,6 +59,10 @@ app.get('/api/calc', (req: Request, res: Response) => {
       default:
         return res.status(500).json([{ ok: false, code: '500', message: 'Internal server error' }]);
     }
+
+    // Save updated number to Edge Config
+    await edgeConfig.set('number', number);
+
     res.json([{
       ok: true,
       code: '200',
@@ -66,5 +76,5 @@ app.get('/api/calc', (req: Request, res: Response) => {
 });
 
 export default function handler(req: VercelRequest, res: VercelResponse) {
-  app(req, res);
+  app(req as any, res as any);
 }
