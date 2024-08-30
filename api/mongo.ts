@@ -1,6 +1,6 @@
 import { MongoClient, Db } from 'mongodb';
 
-const uri = "mongodb+srv://syaamilmaulana2755:klhYSiYsaWOMZh7v@cluster0.c3icm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";";
+const uri = "mongodb+srv://syaamilmaulana2755:klhYSiYsaWOMZh7v@cluster0.c3icm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 let cachedClient: MongoClient | null = null;
 let cachedDb: Db | null = null;
 
