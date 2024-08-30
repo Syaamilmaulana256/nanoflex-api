@@ -1,5 +1,4 @@
 import express, { Express, Request, Response } from 'express';
-import routes from './routes';
 const app: Express = express();
 
 let number = 0;
@@ -63,4 +62,3 @@ app.get('/api/calc', (req: Request, res: Response) => {
     res.status(500).json([{ ok: false, code: '500', message: 'Internal server error' }]);
   }
 });
-app.use('/api', routes);
