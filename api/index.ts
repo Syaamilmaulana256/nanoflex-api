@@ -69,6 +69,8 @@ app.get('/api/calc', (req: Request, res: Response) => {
 app.use('/api', routes);
 
 // Vercel serverless function handler
-export default function handler(req: VercelRequest, res: VercelResponse) {
-  app(req as any, res as any);
-}
+export default (req: VercelRequest, res: VercelResponse) => {
+  return new Promise<void>((resolve) => {
+    app(req as any, res as any, () => resolve());
+  });
+};
