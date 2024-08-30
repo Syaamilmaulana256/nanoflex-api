@@ -1,28 +1,8 @@
-import express, { Request, Response } from 'express';
+import { VercelRequest, VercelResponse } from '@vercel/node';
 import fetch from 'node-fetch';
-import path from 'path';
-import { writeFile } from 'fs/promises';
-import { existsSync } from 'fs';
 import { connectToDatabase } from './mongo';
 
-const router = express.Router();
-
-const TMP_DIR = '/tmp'; // Vercel mengizinkan penulisan ke /tmp
-
-// Route untuk mengakses file yang diunduh
-router.get('/tmp/:filename', (req: Request, res: Response) => {
-  const fileName = req.params.filename;
-  const filePath = path.join(TMP_DIR, fileName);
-
-  if (!existsSync(filePath)) {
-    return res.status(404).json([{ ok: false, code: 404, message: 'File not found' }]);
-  }
-
-  res.sendFile(filePath);
-});
-
-// Route untuk download file
-router.get('/downfile', async (req: Request, res: Response) => {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { url, filetype } = req.query;
 
   if (!url || !filetype) {
@@ -44,44 +24,73 @@ router.get('/downfile', async (req: Request, res: Response) => {
     const fileBuffer = Buffer.from(arrayBuffer);
     const fileExtension = contentType.split('/')[1];
     const fileName = `downloaded_${Date.now()}.${fileExtension}`;
-    
-    const downloadLink = path.join(TMP_DIR, fileName);
 
-    // Simpan file ke direktori sementara
-    await writeFile(downloadLink, fileBuffer);
-
-    // Simpan metadata file ke MongoDB
+    // Instead of saving to /tmp, we'll store the file content in MongoDB
     const db = await connectToDatabase();
     const now = new Date();
     const oneYearLater = new Date(now);
     oneYearLater.setFullYear(now.getFullYear() + 1);
 
     const fileMetadata = {
-      fileurl: downloadLink,
+      fileName: fileName,
+      fileContent: fileBuffer.toString('base64'),
       filetype: filetype.toString(),
+      contentType: contentType,
       created: now.toISOString(),
       deleted: oneYearLater.toISOString(),
     };
 
     await db.collection('files').insertOne(fileMetadata);
 
+    const downloadUrl = `https://aura-api-hazel.vercel.app/api/download?fileName=${encodeURIComponent(fileName)}`;
+
     return res.status(200).json([{ 
       ok: true, 
       code: 200, 
       data: { 
-        link: `https://aura-api-taupe.vercel.app/api/tmp/${fileName}`, 
+        fileName: fileName,
         type: filetype, 
         created: fileMetadata.created, 
-        deleted: fileMetadata.deleted 
+        deleted: fileMetadata.deleted,
+        downloadUrl: downloadUrl // Kembalikan URL Download
       } 
     }]);
 
   } catch (error: unknown) {
+    console.error('Error:', error);
     if (error instanceof Error) {
       return res.status(500).json([{ ok: false, code: 500, message: `Internal Server Error: ${error.message}` }]);
     }
     return res.status(500).json([{ ok: false, code: 500, message: 'Internal Server Error: An unknown error occurred' }]);
   }
-});
+}
 
-export default router;
+// Endpoint untuk mengunduh file berdasarkan fileName
+export async function downloadHandler(req: VercelRequest, res: VercelResponse) {
+  const { fileName } = req.query;
+
+  if (!fileName) {
+    return res.status(400).json([{ ok: false, code: 400, message: 'Missing parameter: fileName' }]);
+  }
+
+  try {
+    const db = await connectToDatabase();
+    const fileMetadata = await db.collection('files').findOne({ fileName: fileName.toString() });
+
+    if (!fileMetadata) {
+      return res.status(404).json([{ ok: false, code: 404, message: 'File not found' }]);
+    }
+
+    const fileBuffer = Buffer.from(fileMetadata.fileContent, 'base64');
+    res.setHeader('Content-Type', fileMetadata.contentType);
+    res.setHeader('Content-Disposition', `attachment; filename="${fileMetadata.fileName}"`);
+    return res.send(fileBuffer);
+
+  } catch (error: unknown) {
+    console.error('Error:', error);
+    if (error instanceof Error) {
+      return res.status(500).json([{ ok: false, code: 500, message: `Internal Server Error: ${error.message}` }]);
+    }
+    return res.status(500).json([{ ok: false, code: 500, message: 'Internal Server Error: An unknown error occurred' }]);
+  }
+}
