@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 import path from 'path';
 import { writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
-import { connectToDatabase } from './db/mongo';
+import { connectToDatabase } from './mongo';
 
 const router = express.Router();
 
