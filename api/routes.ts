@@ -3,14 +3,13 @@ import fetch from 'node-fetch';
 import path from 'path';
 import { writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
-import { createClient } from '@vercel/blob';  // Import Vercel Blob client
+import { connectToDatabase } from './db/mongo';
 
 const router = express.Router();
+
 const TMP_DIR = '/tmp'; // Vercel mengizinkan penulisan ke /tmp
 
-const blobClient = createClient();  // Initialize Vercel Blob client
-
-// Route untuk mengakses file yang diunduh dari TMP_DIR
+// Route untuk mengakses file yang diunduh
 router.get('/tmp/:filename', (req: Request, res: Response) => {
   const fileName = req.params.filename;
   const filePath = path.join(TMP_DIR, fileName);
@@ -22,7 +21,7 @@ router.get('/tmp/:filename', (req: Request, res: Response) => {
   res.sendFile(filePath);
 });
 
-// Route untuk download file dan menyimpannya di Blob Storage
+// Route untuk download file
 router.get('/downfile', async (req: Request, res: Response) => {
   const { url, filetype } = req.query;
 
@@ -51,23 +50,30 @@ router.get('/downfile', async (req: Request, res: Response) => {
     // Simpan file ke direktori sementara
     await writeFile(downloadLink, fileBuffer);
 
-    // Upload file ke Blob Storage Vercel
-    const blobUpload = await blobClient.upload({
-      path: fileName,  // Nama file
-      data: fileBuffer,  // Data file sebagai buffer
-      contentType: contentType,  // Tipe konten file
-    });
+    // Simpan metadata file ke MongoDB
+    const db = await connectToDatabase();
+    const now = new Date();
+    const oneYearLater = new Date(now);
+    oneYearLater.setFullYear(now.getFullYear() + 1);
 
-    // Hapus file dari TMP_DIR jika tidak diperlukan lagi
-    // await fs.promises.unlink(downloadLink);
+    const fileMetadata = {
+      fileurl: downloadLink,
+      filetype: filetype.toString(),
+      created: now.toISOString(),
+      deleted: oneYearLater.toISOString(),
+    };
 
-    return res.status(200).json([{
-      ok: true,
-      code: 200,
-      data: {
-        link: blobUpload.url,  // URL ke file di Blob Storage
-        type: filetype,
-      },
+    await db.collection('files').insertOne(fileMetadata);
+
+    return res.status(200).json([{ 
+      ok: true, 
+      code: 200, 
+      data: { 
+        link: `https://aura-api-taupe.vercel.app/api/tmp/${fileName}`, 
+        type: filetype, 
+        created: fileMetadata.created, 
+        deleted: fileMetadata.deleted 
+      } 
     }]);
 
   } catch (error: unknown) {
