@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from 'express';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import routes from './routes';
+
 const app: Express = express();
 
 let number = 0;
@@ -67,9 +68,7 @@ app.get('/api/calc', (req: Request, res: Response) => {
 
 app.use('/api', routes);
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Buat req dan res Express-compatible dan panggil app
-  await new Promise<void>((resolve) => {
-    app(req as any, res as any, resolve);
-  });
+// Vercel serverless function handler
+export default function handler(req: VercelRequest, res: VercelResponse) {
+  app(req as any, res as any);
 }
