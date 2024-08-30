@@ -5,7 +5,7 @@ import { EdgeConfig } from '@vercel/edge-config'; // Import EdgeConfig client
 const app: Express = express();
 app.use(express.json());
 
-const edgeConfig = new EdgeConfig(process.env.EDGE.CONFIG);
+const edgeConfig = new EdgeConfig(process.env.EDGE_CONFIG);
 
 // Route for calculation
 app.get('/api/calc', async (req: Request, res: Response) => {
