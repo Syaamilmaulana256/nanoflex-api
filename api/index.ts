@@ -1,5 +1,4 @@
 import express, { Express, Request, Response } from 'express';
-import serverless from 'serverless-http';
 import routes from './routes';
 const app: Express = express();
 
@@ -65,5 +64,3 @@ app.get('/api/calc', (req: Request, res: Response) => {
   }
 });
 app.use('/api', routes);
-// Vercel serverless function handler
-export const handler = serverless(app);
