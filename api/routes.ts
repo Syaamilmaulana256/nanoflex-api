@@ -1,3 +1,4 @@
+// api/routes.ts
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import fetch from 'node-fetch';
 import { connectToDatabase } from './mongo';
@@ -25,8 +26,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const fileExtension = contentType.split('/')[1];
     const fileName = `downloaded_${Date.now()}.${fileExtension}`;
 
-    // Instead of saving to /tmp, we'll store the file content in MongoDB
-    const db = await connectToDatabase();
+    const { db } = await connectToDatabase();
     const now = new Date();
     const oneYearLater = new Date(now);
     oneYearLater.setFullYear(now.getFullYear() + 1);
@@ -52,7 +52,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         type: filetype, 
         created: fileMetadata.created, 
         deleted: fileMetadata.deleted,
-        downloadUrl: downloadUrl // Kembalikan URL Download
+        downloadUrl: downloadUrl
       } 
     }]);
 
@@ -74,7 +74,7 @@ export async function downloadHandler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const db = await connectToDatabase();
+    const { db } = await connectToDatabase();
     const fileMetadata = await db.collection('files').findOne({ fileName: fileName.toString() });
 
     if (!fileMetadata) {
