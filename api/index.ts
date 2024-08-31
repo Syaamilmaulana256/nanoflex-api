@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import { CreateEdgeConfig } from '@vercel/edge-config'; // Import EdgeConfig client
+import CreateEdgeConfig from "@vercel/edge-config"; // Import EdgeConfig client
 
 const app: Express = express();
 app.use(express.json());
