@@ -1,13 +1,12 @@
 import express, { Express, Request, Response } from 'express';
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import CreateEdgeConfig from "@vercel/edge-config";
+import cookieParser from 'cookie-parser';
 
 const app: Express = express();
 app.use(express.json());
+app.use(cookieParser());
 
-const edgeConfig = CreateEdgeConfig("https://edge-config.vercel.com/ecfg_87iyqj3pn8wadw04jo8ar3drwmhf?token=b0cb4da4-40c6-456e-89b5-0ed83e01d952");
-
-app.get('/api/calc', async (req: Request, res: Response) => {
+app.get('/api/calc', (req: Request, res: Response) => {
   try {
     const { add, reduce, multiply, divided } = req.query as { add?: string; reduce?: string; multiply?: string; divided?: string };
 
@@ -26,24 +25,9 @@ app.get('/api/calc', async (req: Request, res: Response) => {
       return res.status(400).json([{ ok: false, code: '400', message: 'Invalid value for operation' }]);
     }
 
-    // Retrieve current number from Edge Config
-    let number;
-    try {
-      number = await edgeConfig.get('number');
-      console.log('Current number from Edge Config:', number);
-    } catch (edgeConfigError) {
-      console.error('Error retrieving from Edge Config:', edgeConfigError);
-      return res.status(500).json([{ ok: false, code: '500', message: 'Error accessing Edge Config' }]);
-    }
-
-    if (number === undefined) {
-      console.log('Number not found in Edge Config, defaulting to 0');
-      number = 0;
-    }
-
+    let number = parseInt(req.cookies.number || '0', 10);
     let msg;
 
-    // Perform calculation based on operation:
     switch (operation) {
       case 'add':
         number += value;
@@ -68,14 +52,14 @@ app.get('/api/calc', async (req: Request, res: Response) => {
         return res.status(500).json([{ ok: false, code: '500', message: 'Internal server error' }]);
     }
 
-    // Save updated number to Edge Config
-    try {
-      await edgeConfig.set('number', number);
-      console.log('Updated number in Edge Config:', number);
-    } catch (edgeConfigError) {
-      console.error('Error saving to Edge Config:', edgeConfigError);
-      return res.status(500).json([{ ok: false, code: '500', message: 'Error updating Edge Config' }]);
-    }
+    // Automatically detect if the connection is secure
+    const isSecure = req.secure || req.headers['x-forwarded-proto'] === 'https';
+
+    res.cookie('number', number.toString(), { 
+      httpOnly: true, 
+      secure: isSecure, 
+      maxAge: 24 * 60 * 60 * 1000 // 1 day
+    });
 
     res.json([{
       ok: true,
@@ -84,8 +68,7 @@ app.get('/api/calc', async (req: Request, res: Response) => {
       data: { number: number },
     }]);
   } catch (error: unknown) {
-    console.error('Unhandled error in /api/calc:', error);
-    res.status(500).json([{ ok: false, code: '500', message: 'Internal server error', error: String(error) }]);
+    res.status(500).json([{ ok: false, code: '500', message: 'Internal server error' }]);
   }
 });
 
