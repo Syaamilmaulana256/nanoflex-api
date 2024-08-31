@@ -1,13 +1,12 @@
 import express, { Express, Request, Response } from 'express';
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import CreateEdgeConfig from "@vercel/edge-config"; // Import EdgeConfig client
+import CreateEdgeConfig from "@vercel/edge-config";
 
 const app: Express = express();
 app.use(express.json());
 
 const edgeConfig = CreateEdgeConfig(process.env.EDGE_CONFIG);
 
-// Route for calculation
 app.get('/api/calc', async (req: Request, res: Response) => {
   try {
     const { add, reduce, multiply, divided } = req.query as { add?: string; reduce?: string; multiply?: string; divided?: string };
@@ -28,9 +27,18 @@ app.get('/api/calc', async (req: Request, res: Response) => {
     }
 
     // Retrieve current number from Edge Config
-    let number = await edgeConfig.get('number');
+    let number;
+    try {
+      number = await edgeConfig.get('number');
+      console.log('Current number from Edge Config:', number);
+    } catch (edgeConfigError) {
+      console.error('Error retrieving from Edge Config:', edgeConfigError);
+      return res.status(500).json([{ ok: false, code: '500', message: 'Error accessing Edge Config' }]);
+    }
+
     if (number === undefined) {
-      number = 0; // Default to 0 if not set
+      console.log('Number not found in Edge Config, defaulting to 0');
+      number = 0;
     }
 
     let msg;
@@ -61,7 +69,13 @@ app.get('/api/calc', async (req: Request, res: Response) => {
     }
 
     // Save updated number to Edge Config
-    await edgeConfig.set('number', number);
+    try {
+      await edgeConfig.set('number', number);
+      console.log('Updated number in Edge Config:', number);
+    } catch (edgeConfigError) {
+      console.error('Error saving to Edge Config:', edgeConfigError);
+      return res.status(500).json([{ ok: false, code: '500', message: 'Error updating Edge Config' }]);
+    }
 
     res.json([{
       ok: true,
@@ -70,8 +84,8 @@ app.get('/api/calc', async (req: Request, res: Response) => {
       data: { number: number },
     }]);
   } catch (error: unknown) {
-    console.error(error);
-    res.status(500).json([{ ok: false, code: '500', message: 'Internal server error' }]);
+    console.error('Unhandled error in /api/calc:', error);
+    res.status(500).json([{ ok: false, code: '500', message: 'Internal server error', error: String(error) }]);
   }
 });
 
