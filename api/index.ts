@@ -5,7 +5,7 @@ import CreateEdgeConfig from "@vercel/edge-config";
 const app: Express = express();
 app.use(express.json());
 
-const edgeConfig = CreateEdgeConfig(process.env.EDGE_CONFIG);
+const edgeConfig = CreateEdgeConfig("https://edge-config.vercel.com/ecfg_87iyqj3pn8wadw04jo8ar3drwmhf?token=b0cb4da4-40c6-456e-89b5-0ed83e01d952");
 
 app.get('/api/calc', async (req: Request, res: Response) => {
   try {
