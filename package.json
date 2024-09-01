@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "next": "latest"
+    "next": "latest", 
+    "express-rate-limit": "^7.4.0" 
   },
   "devDependencies": {
     "@types/express": "^4.17.1",
