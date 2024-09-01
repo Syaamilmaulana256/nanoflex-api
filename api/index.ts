@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from 'express';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import rateLimit from 'express-rate-limit';
 
+const app: Express = express();
 const limiter = rateLimit({
   windowMs: 60000, // 1 minute
   max: 50, // limit each IP to 50 requests per windowMs
@@ -10,7 +11,6 @@ const limiter = rateLimit({
 });
 
 app.use(limiter);
-const app: Express = express();
 app.use(express.json());
 
 // Helper function to parse cookies from the request header
