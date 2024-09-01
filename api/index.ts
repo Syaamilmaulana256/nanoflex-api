@@ -1,10 +1,22 @@
 import express, { Express, Request, Response } from 'express';
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import cookieParser from 'cookie-parser';
 
 const app: Express = express();
 app.use(express.json());
-app.use(cookieParser());
+
+// Helper function to parse cookies from the request header
+function parseCookies(cookieHeader: string | undefined): { [key: string]: string } {
+  const cookies: { [key: string]: string } = {};
+  if (cookieHeader) {
+    cookieHeader.split(';').forEach(cookie => {
+      const parts = cookie.split('=');
+      const key = parts[0].trim();
+      const value = parts[1].trim();
+      cookies[key] = decodeURIComponent(value);
+    });
+  }
+  return cookies;
+}
 
 app.get('/api/calc', (req: Request, res: Response) => {
   try {
@@ -25,7 +37,9 @@ app.get('/api/calc', (req: Request, res: Response) => {
       return res.status(400).json([{ ok: false, code: '400', message: 'Invalid value for operation' }]);
     }
 
-    let number = parseInt(req.cookies.number || '0', 10);
+    // Parse cookies manually
+    const cookies = parseCookies(req.headers.cookie);
+    let number = parseInt(cookies['number'] || '0', 10);
     let msg;
 
     switch (operation) {
@@ -52,14 +66,10 @@ app.get('/api/calc', (req: Request, res: Response) => {
         return res.status(500).json([{ ok: false, code: '500', message: 'Internal server error' }]);
     }
 
-    // Automatically detect if the connection is secure
     const isSecure = req.secure || req.headers['x-forwarded-proto'] === 'https';
 
-    res.cookie('number', number.toString(), { 
-      httpOnly: true, 
-      secure: isSecure, 
-      maxAge: 24 * 60 * 60 * 1000 // 1 day
-    });
+    // Set cookie manually
+    res.setHeader('Set-Cookie', `number=${number}; HttpOnly; ${isSecure ? 'Secure;' : ''} Max-Age=86400; Path=/`);
 
     res.json([{
       ok: true,
@@ -68,10 +78,11 @@ app.get('/api/calc', (req: Request, res: Response) => {
       data: { number: number },
     }]);
   } catch (error: unknown) {
-    res.status(500).json([{ ok: false, code: '500', message: 'Internal server error' }]);
+    console.error('Error in /api/calc:', error);
+    res.status(500).json([{ ok: false, code: '500', message: 'Internal server error', error: String(error) }]);
   }
 });
 
 export default function handler(req: VercelRequest, res: VercelResponse) {
   app(req as any, res as any);
-}
+    }
