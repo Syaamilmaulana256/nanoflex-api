@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .catch(error => {
             resultDiv.classList.remove('success');
             resultDiv.classList.add('error');
-            resultDiv.innerHTML = `<code>${error.message}</code>`;
+            resultDiv.innerHTML = `${error.message}`;
         });
     });
 });
