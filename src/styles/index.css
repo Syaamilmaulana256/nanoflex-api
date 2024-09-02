@@ -7,9 +7,16 @@
         .result.success {
             background-color: #e0ffe0;
             border-color: #00cc00;
+            white-space: pre-wrap;  /* Mengizinkan teks untuk membungkus ke baris berikutnya */
+            word-wrap: break-word;  /* Memastikan teks panjang dapat terputus dan dibungkus */
+            overflow-wrap: break-word; /* Opsi tambahan untuk kompatibilitas */
         }
 
         .result.error {
             background-color: #ffe0e0;
             border-color: #ff0000;
+            white-space: pre-wrap;  /* Mengizinkan teks untuk membungkus ke baris berikutnya */
+            word-wrap: break-word;  /* Memastikan teks panjang dapat terputus dan dibungkus */
+            overflow-wrap: break-word; /* Opsi tambahan untuk kompatibilitas */
+   
         }
