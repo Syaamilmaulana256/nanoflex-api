@@ -7,16 +7,25 @@
         .result.success {
             background-color: #e0ffe0;
             border-color: #00cc00;
-            white-space: pre-wrap;  /* Mengizinkan teks untuk membungkus ke baris berikutnya */
-            word-wrap: break-word;  /* Memastikan teks panjang dapat terputus dan dibungkus */
-            overflow-wrap: break-word; /* Opsi tambahan untuk kompatibilitas */
         }
 
         .result.error {
             background-color: #ffe0e0;
             border-color: #ff0000;
-            white-space: pre-wrap;  /* Mengizinkan teks untuk membungkus ke baris berikutnya */
-            word-wrap: break-word;  /* Memastikan teks panjang dapat terputus dan dibungkus */
-            overflow-wrap: break-word; /* Opsi tambahan untuk kompatibilitas */
-   
         }
+.result {
+    border: 1px solid #ccc;
+    padding: 10px;
+    min-height: 100px;
+    margin-top: 20px;
+    white-space: pre-wrap;  /* Mengizinkan teks untuk membungkus ke baris berikutnya */
+    word-wrap: break-word;  /* Memastikan teks panjang dapat terputus dan dibungkus */
+    overflow-wrap: break-word; /* Opsi tambahan untuk kompatibilitas */
+    text-align: left;
+    font-size: 1rem;
+    overflow: hidden; /* Menyembunyikan bagian teks yang melampaui kontainer */
+    width: 100%; /* Memastikan kotak hasil menggunakan 100% lebar kontainer induk */
+    box-sizing: border-box; /* Memastikan padding termasuk dalam lebar total elemen */
+    max-width: 100%; /* Memastikan elemen tidak melebihi 100% lebar induknya */
+}
+
