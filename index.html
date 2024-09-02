@@ -7,60 +7,85 @@
     <link rel="icon" type="image/x-icon" href="./src/favicons/favicon.jpeg">
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./src/styles/index.css">
-<script>
-  window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/speed-insights/script.js"></script>
-    <script>
-  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/insights/script.js"></script>
 </head>
-<body>
-    <nav>
-        <div class="logo">Aura API</div>
-        <ul>
-            <li><a href="#documentation">Dokumentasi</a></li>
-            <li><a href="#try-now">Cobalah Sekarang</a></li>
-            <li><a href="#about">Tentang</a></li>
-        </ul>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Navbar -->
+    <nav class="bg-blue-600 text-white py-4 sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="text-2xl font-bold">Aura API</div>
+            <ul class="flex space-x-6">
+                <li><a href="#documentation" class="hover:text-blue-300">Dokumentasi</a></li>
+                <li><a href="#try-now" class="hover:text-blue-300">Cobalah Sekarang</a></li>
+                <li><a href="#about" class="hover:text-blue-300">Tentang</a></li>
+            </ul>
+        </div>
     </nav>
 
-    <header>
-        <h1>Welcome to Aura API</h1>
-        <p>API sederhana dengan performa cepat untuk kebutuhan modern Anda.</p>
-        <button class="cta-btn">Get Started</button>
+    <!-- Header -->
+    <header class="text-center py-20 bg-gradient-to-r from-blue-600 to-blue-300 text-white">
+        <h1 class="text-4xl font-bold mb-4">Welcome to Aura API</h1>
+        <p class="text-lg mb-8">API sederhana dengan performa cepat untuk kebutuhan modern Anda.</p>
+        <button class="oxanium-font bg-white text-blue-600 py-3 px-6 rounded-md hover:bg-gray-200">Get Started</button>
     </header>
 
-    <section id="documentation">
-        <h2>Dokumentasi</h2>
-        <p>Temukan semua informasi yang Anda butuhkan untuk menggunakan Aura API dengan mudah dan efektif.</p>
-        <button class="doc-btn">Lihat Dokumentasi</button>
+    <!-- Dokumentasi Section -->
+    <section id="documentation" class="py-20 text-center">
+        <h2 class="text-3xl font-bold text-blue-600 mb-6">Dokumentasi</h2>
+        <p class="mb-6">Temukan semua informasi yang Anda butuhkan untuk menggunakan Aura API dengan mudah dan efektif.</p>
+        <button class="oxanium-font bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-500">Lihat Dokumentasi</button>
     </section>
 
-    <section id="try-now">
-        <h2>Cobalah Sekarang</h2>
-        <p>Masukkan URL endpoint untuk mencoba Aura API.</p>
-        <div>
-            <label for="url">URL:</label>
-            <input type="url" id="url" placeholder="https://aura-api-taupe.vercel.app/api/calc" required>
+    <!-- Cobalah Sekarang Section -->
+    <section id="try-now" class="py-20 text-center">
+        <h2 class="text-3xl font-bold text-blue-600 mb-6">Cobalah Sekarang</h2>
+        <p class="mb-6">Masukkan URL endpoint untuk mencoba Aura API.</p>
+        
+        <!-- Dropdown Method -->
+        <div class="mb-4">
+            <label for="method" class="block text-lg mb-2">Method:</label>
+            <select id="method" class="oxanium-font bg-white border border-gray-300 rounded-md py-2 px-4">
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+            </select>
         </div>
 
-        <button id="sendRequest" class="try-btn" disabled>Coba Sekarang</button>
+        <!-- Kontainer untuk URL -->
+        <div class="mb-4">
+            <label for="url" class="block text-lg mb-2">URL:</label>
+            <input type="url" id="url" placeholder="https://aura-api-taupe.vercel.app/api/calc" required
+                   class="oxanium-font bg-white border border-gray-300 rounded-md py-2 px-4 w-1/2 max-w-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+            <p id="urlError" class="text-red-600 text-sm mt-2 hidden">URL tidak valid atau kosong.</p>
+        </div>
 
-        <div class="result" id="result"></div>
+        <!-- Kontainer untuk POST Body -->
+        <div id="postBodyContainer" class="mb-4 hidden">
+            <label for="postBody" class="block text-lg mb-2">Body untuk POST:</label>
+            <textarea id="postBody" rows="4"
+                      class="oxanium-font bg-white border border-gray-300 rounded-md py-2 px-4 w-1/2 max-w-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"></textarea>
+        </div>
+
+        <!-- Button Coba Sekarang -->
+        <button id="sendRequest" class="oxanium-font bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-500" disabled>Coba Sekarang</button>
+
+        <!-- Kontainer untuk Hasil -->
+        <div class="result mt-8 p-4 border rounded-md w-1/2 max-w-md mx-auto"></div>
     </section>
 
-    <section id="about">
-        <h2>Tentang Aura API</h2>
+    <!-- Tentang Section -->
+    <section id="about" class="py-20 text-center">
+        <h2 class="text-3xl font-bold text-blue-600 mb-6">Tentang Aura API</h2>
         <p>Aura API adalah API sederhana dan cepat yang didesain untuk pengembang modern. Kami berkomitmen untuk memberikan performa terbaik dengan antarmuka yang mudah digunakan.</p>
     </section>
 
-    <footer>
-        <p>Project ini adalah open-source. <a href="https://github.com/Syaamilmaulana256/aura-api">Lihat di GitHub</a></p>
+    <!-- Footer -->
+    <footer class="bg-blue-600 text-white py-4">
+        <p>Project ini adalah open-source. <a href="https://github.com/Syaamilmaulana256/aura-api" class="underline">Lihat di GitHub</a></p>
     </footer>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./src/scripts/index.js"></script>
 </body>
 </html>
