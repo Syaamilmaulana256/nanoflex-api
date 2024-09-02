@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    const ctaBtn = document.querySelector(".cta-btn");
+    const ctaBtn = document.getElementById("cta-btn");
     ctaBtn.addEventListener("click", function() {
         document.querySelector('#documentation').scrollIntoView({ 
             behavior: 'smooth' 
