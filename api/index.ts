@@ -5,7 +5,7 @@ import rateLimit from 'express-rate-limit';
 const app: Express = express();
 const limiter = rateLimit({
   windowMs: 300000, // 5 minutes
-  max: 250, // limit each IP to 250 requests per windowMs
+  max: 120, // limit each IP to 250 requests per windowMs
   message: "([{ ok: false, code: 429, message: 'Too many requests, try again later' }])",
   statusCode: 429,
 });
@@ -52,7 +52,7 @@ function handleCalcRequest(req: Request, res: Response) {
     let operation: string | undefined;
     let value: number;
 
-    // Parse operation and value from query params (GET) or request body (POST)
+    // Parse operation and value dari query params (GET) atau request body (POST)
     if (req.method === 'GET') {
       const { add, reduce, multiply, divided } = req.query as { add?: string; reduce?: string; multiply?: string; divided?: string };
       operation = Object.keys(req.query).find(key => ['add', 'reduce', 'multiply', 'divided'].includes(key));
@@ -82,8 +82,14 @@ function handleCalcRequest(req: Request, res: Response) {
 
     const isSecure = req.secure || req.headers['x-forwarded-proto'] === 'https';
 
-    // Set cookie manually
-    res.setHeader('Set-Cookie', `number=${number}; HttpOnly; ${isSecure ? 'Secure;' : ''} Max-Age=86400; Path=/`);
+    // Set cookie manually with explicit expiration date using local timezone
+    const expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDate() + 1); // Expire tomorrow
+
+    // Convert to string using local timezone
+    const expirationDateString = expirationDate.toString();
+
+    res.setHeader('Set-Cookie', `number=${number}; HttpOnly; ${isSecure ? 'Secure;' : ''} Expires=${expirationDateString}; Path=/`);
 
     res.json([{
       ok: true,
@@ -99,12 +105,4 @@ function handleCalcRequest(req: Request, res: Response) {
       res.status(500).json([{ ok: false, code: '500', message: 'Internal server error', error: String(error) }]);
     }
   }
-}
-
-// Handle both GET and POST requests
-app.get('/api/calc', handleCalcRequest);
-app.post('/api/calc', handleCalcRequest);
-
-export default function handler(req: VercelRequest, res: VercelResponse) {
-  app(req as any, res as any);
 }
