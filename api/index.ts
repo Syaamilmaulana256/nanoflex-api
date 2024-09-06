@@ -1,33 +1,19 @@
 import express, { Express, Request, Response } from 'express';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import rateLimit from 'express-rate-limit';
+import cookieParser from 'cookie-parser';
 
 const app: Express = express();
 const limiter = rateLimit({
   windowMs: 300000, // 5 minutes
   max: 120, // limit each IP to 120 requests per windowMs
-  message: "([{ ok: false, code: 429, message: 'Too many requests, try again later' }])",
+  message: "[{ ok: false, code: 429, message: 'Too many requests, try again later' }]",
   statusCode: 429,
 });
 
 app.use(limiter);
 app.use(express.json());
-
-// Helper function to parse cookies from the request header
-function parseCookies(cookieHeader: string | undefined): { [key: string]: string } {
-  const cookies: { [key: string]: string } = {};
-  if (cookieHeader) {
-    cookieHeader.split(';').forEach(cookie => {
-      const parts = cookie.split('=');
-      const key = parts[0].trim();
-      const value = parts[1]?.trim();
-      if (key && value) {
-        cookies[key] = decodeURIComponent(value);
-      }
-    });
-  }
-  return cookies;
-}
+app.use(cookieParser()); // Use cookie-parser middleware
 
 // Helper function to perform calculation
 function performCalculation(operation: string, value: number, currentNumber: number): { number: number; msg: string } {
@@ -75,8 +61,8 @@ function handleCalcRequest(req: Request, res: Response) {
       return res.status(400).json([{ ok: false, code: '400', message: 'Invalid value for operation' }]);
     }
 
-    // Parse cookies manually
-    const cookies = parseCookies(req.headers.cookie);
+    // Use cookie-parser middleware to parse cookies
+    const cookies = req.cookies;
     let currentNumber = parseInt(cookies['number'] || '0', 10);
 
     // Perform calculation
