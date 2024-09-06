@@ -5,7 +5,7 @@ import rateLimit from 'express-rate-limit';
 const app: Express = express();
 const limiter = rateLimit({
   windowMs: 300000, // 5 minutes
-  max: 120, // limit each IP to 250 requests per windowMs
+  max: 120, // limit each IP to 120 requests per windowMs
   message: "([{ ok: false, code: 429, message: 'Too many requests, try again later' }])",
   statusCode: 429,
 });
@@ -20,8 +20,10 @@ function parseCookies(cookieHeader: string | undefined): { [key: string]: string
     cookieHeader.split(';').forEach(cookie => {
       const parts = cookie.split('=');
       const key = parts[0].trim();
-      const value = parts[1].trim();
-      cookies[key] = decodeURIComponent(value);
+      const value = parts[1]?.trim();
+      if (key && value) {
+        cookies[key] = decodeURIComponent(value);
+      }
     });
   }
   return cookies;
@@ -52,7 +54,7 @@ function handleCalcRequest(req: Request, res: Response) {
     let operation: string | undefined;
     let value: number;
 
-    // Parse operation and value dari query params (GET) atau request body (POST)
+    // Parse operation and value from query params (GET) or request body (POST)
     if (req.method === 'GET') {
       const { add, reduce, multiply, divided } = req.query as { add?: string; reduce?: string; multiply?: string; divided?: string };
       operation = Object.keys(req.query).find(key => ['add', 'reduce', 'multiply', 'divided'].includes(key));
@@ -82,12 +84,12 @@ function handleCalcRequest(req: Request, res: Response) {
 
     const isSecure = req.secure || req.headers['x-forwarded-proto'] === 'https';
 
-    // Set cookie manually with explicit expiration date using local timezone
+    // Set cookie expiration date using the user's local timezone
     const expirationDate = new Date();
     expirationDate.setDate(expirationDate.getDate() + 1); // Expire tomorrow
 
-    // Convert to string using local timezone
-    const expirationDateString = expirationDate.toString();
+    // Convert to a local timezone string
+    const expirationDateString = expirationDate.toLocaleString('en-US', { timeZoneName: 'short' });
 
     res.setHeader('Set-Cookie', `number=${number}; HttpOnly; ${isSecure ? 'Secure;' : ''} Expires=${expirationDateString}; Path=/`);
 
@@ -106,3 +108,9 @@ function handleCalcRequest(req: Request, res: Response) {
     }
   }
 }
+
+// Attach the handler to the route
+app.get('/api/calc', handleCalcRequest);
+app.post('/api/calc', handleCalcRequest);
+
+export default app;
