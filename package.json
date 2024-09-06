@@ -10,7 +10,8 @@
   "dependencies": {
     "express": "^4.17.1",
     "next": "latest", 
-    "express-rate-limit": "^7.4.0" 
+    "express-rate-limit": "^7.4.0",
+    "cookie-parser": "^1.4.6"
   },
   "devDependencies": {
     "@types/express": "^4.17.1",
