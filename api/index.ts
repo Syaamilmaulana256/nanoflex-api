@@ -5,8 +5,8 @@ import rateLimit from 'express-rate-limit';
 const app: Express = express();
 const limiter = rateLimit({
   windowMs: 300000, // 5 minutes
-  max: 250, // limit each IP to 250 requests per windowMs
-  message: "([{ ok: false, code: 429, message: 'Too many requests, try again later' }])",
+  max: 124, // limit each IP to 124 requests per windowMs
+  message: "[{ ok: false, code: 429, message: 'Too many requests, try again later' }]",
   statusCode: 429,
 });
 
