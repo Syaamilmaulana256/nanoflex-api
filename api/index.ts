@@ -1,19 +1,31 @@
 import express, { Express, Request, Response } from 'express';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import rateLimit from 'express-rate-limit';
-import cookieParser from 'cookie-parser';
 
 const app: Express = express();
 const limiter = rateLimit({
   windowMs: 300000, // 5 minutes
-  max: 120, // limit each IP to 120 requests per windowMs
-  message: "[{ ok: false, code: 429, message: 'Too many requests, try again later' }]",
+  max: 250, // limit each IP to 250 requests per windowMs
+  message: "([{ ok: false, code: 429, message: 'Too many requests, try again later' }])",
   statusCode: 429,
 });
 
 app.use(limiter);
 app.use(express.json());
-app.use(cookieParser()); // Use cookie-parser middleware
+
+// Helper function to parse cookies from the request header
+function parseCookies(cookieHeader: string | undefined): { [key: string]: string } {
+  const cookies: { [key: string]: string } = {};
+  if (cookieHeader) {
+    cookieHeader.split(';').forEach(cookie => {
+      const parts = cookie.split('=');
+      const key = parts[0].trim();
+      const value = parts[1].trim();
+      cookies[key] = decodeURIComponent(value);
+    });
+  }
+  return cookies;
+}
 
 // Helper function to perform calculation
 function performCalculation(operation: string, value: number, currentNumber: number): { number: number; msg: string } {
@@ -61,8 +73,8 @@ function handleCalcRequest(req: Request, res: Response) {
       return res.status(400).json([{ ok: false, code: '400', message: 'Invalid value for operation' }]);
     }
 
-    // Use cookie-parser middleware to parse cookies
-    const cookies = req.cookies;
+    // Parse cookies manually
+    const cookies = parseCookies(req.headers.cookie);
     let currentNumber = parseInt(cookies['number'] || '0', 10);
 
     // Perform calculation
@@ -70,14 +82,15 @@ function handleCalcRequest(req: Request, res: Response) {
 
     const isSecure = req.secure || req.headers['x-forwarded-proto'] === 'https';
 
-    // Set cookie expiration date using the user's local timezone
+    // Set cookie expiration to 24 hours from now, adjusted for the user's local timezone
     const expirationDate = new Date();
-    expirationDate.setDate(expirationDate.getDate() + 1); // Expire tomorrow
+    expirationDate.setHours(expirationDate.getHours() + 24);
 
-    // Convert to a local timezone string
-    const expirationDateString = expirationDate.toLocaleString('en-US', { timeZoneName: 'short' });
+    // Convert the expiration date to the user's local timezone
+    const options = { timeZone: req.headers['x-timezone'] || 'UTC', timeZoneName: 'short' };
+    const expirationDateString = expirationDate.toLocaleString('en-US', options);
 
-    res.setHeader('Set-Cookie', `number=${number}; HttpOnly; ${isSecure ? 'Secure;' : ''} Expires=${expirationDateString}; Path=/`);
+    res.setHeader('Set-Cookie', `number=${number}; HttpOnly; ${isSecure ? 'Secure;' : ''} Expires=${expirationDate.toUTCString()}; Path=/`);
 
     res.json([{
       ok: true,
@@ -95,8 +108,10 @@ function handleCalcRequest(req: Request, res: Response) {
   }
 }
 
-// Attach the handler to the route
+// Handle both GET and POST requests
 app.get('/api/calc', handleCalcRequest);
 app.post('/api/calc', handleCalcRequest);
 
-export default app;
+export default function handler(req: VercelRequest, res: VercelResponse) {
+  app(req as any, res as any);
+}
