@@ -13,6 +13,29 @@ const limiter = rateLimit({
 app.use(limiter);
 app.use(express.json());
 
+// Middleware for Basic Authentication
+const authenticate = (req: Request, res: Response, next: Function) => {
+  const auth = req.headers['authorization'];
+
+  if (!auth) {
+    res.setHeader('WWW-Authenticate', 'Basic');
+    return res.status(401).json([{ ok: false, code: '401', message: 'Authorization required' }]);
+  }
+
+  const credentials = Buffer.from(auth.split(' ')[1], 'base64').toString().split(':');
+  const [username, password] = credentials;
+
+  // Replace these values with your actual username and password
+  const validUsername = 'admin';
+  const validPassword = 'admin#1234';
+
+  if (username === validUsername && password === validPassword) {
+    return next(); // Allow access
+  } else {
+    return res.status(401).json([{ ok: false, code: '401', message: 'Invalid credentials' }]);
+  }
+};
+
 // Parse cookies
 function parseCookies(c: string | undefined): { [k: string]: string } {
   const cookies: { [k: string]: string } = {};
@@ -87,7 +110,12 @@ function handleReq(req: Request, res: Response) {
 
 // Routes
 app.get('/api/calc', handleReq);
-app.post('/api/calc', handleReq);
+app.post('/api/ccalc', handleReq);
+
+// Protected route
+app.get('/api/auth', authenticate, (req: Request, res: Response) => {
+  res.json([{ ok: true, code: '200', message: 'Authenticated successfully!' }]);
+});
 
 export default function handler(req: VercelRequest, res: VercelResponse) {
   app(req as any, res as any);
