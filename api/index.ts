@@ -110,7 +110,7 @@ function handleReq(req: Request, res: Response) {
 
 // Routes
 app.get('/api/calc', handleReq);
-app.post('/api/ccalc', handleReq);
+app.post('/api/calc', handleReq);
 
 // Protected route
 app.get('/api/auth', authenticate, (req: Request, res: Response) => {
