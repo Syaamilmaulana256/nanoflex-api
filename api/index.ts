@@ -78,9 +78,13 @@ function handleReq(req: Request, res: Response) {
       const { operation, value } = req.body;
       op = operation;
       val = value;
-    } else {
-      return res.status(405).json([{ ok: false, code: '405', message: 'Method Not Allowed' }]);
-    }
+    } else if (req.method === "PUT") {
+   res.status(405).json([{ ok: true, code: '405', message: 'Method Not Allowed'}])
+    } else if (req.method === "DELETE") {
+   res.status(405).json([{ ok: true, code: '405', message: 'Method Not Allowed'}])
+    } else if (req.method === "PATCH") {
+   res.status(405).json([{ ok: true, code: '405', message: 'Method Not Allowed'}])
+    } 
 
     if (!op) return res.status(400).json([{ ok: false, code: '400', message: 'Operation not specified' }]);
     if (isNaN(val)) return res.status(400).json([{ ok: false, code: '400', message: 'Invalid value for operation' }]);
@@ -111,7 +115,9 @@ function handleReq(req: Request, res: Response) {
 // Routes
 app.get('/api/calc', handleReq);
 app.post('/api/calc', handleReq);
-
+app.put('/api/calc', handleReq);
+app.delete('/api/calc', handleReq);
+app.patch('/api/calc', handleReq);
 // Protected route
 app.get('/api/auth', authenticate, (req: Request, res: Response) => {
   res.json([{ ok: true, code: '200', message: 'Authenticated successfully!' }]);
