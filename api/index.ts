@@ -7,11 +7,11 @@ const limiter = rateLimit({
   windowMs: 300000, // 5 minutes
   max: 120, // limit each IP to 120 requests per windowMs
   message: (req, res) => {
-    return res.status(429).json({
+    return res.status(429).json([{
       ok: false,
       code: '429',
       message: 'Too many requests, Please try again',
-    });
+    }]);
   },
 });
 
