@@ -1,42 +1,61 @@
-import exp, { Express, Request, Response } from 'express';
+import express, { Express, Request, Response } from 'express';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import rateLimit from 'express-rate-limit';
 
-const app: Express = exp();
-const lim = rateLimit({
-  windowMs: 300000,
-  max: 120,
-  message: (req, res) => res.status(429).json([{ ok: false, code: '429', message: 'Too many requests, Please try again' }]),
+const app: Express = express();
+const limiter = rateLimit({
+  windowMs: 300000, // 5 minutes
+  max: 120, // limit each IP to 120 requests per windowMs
+  message: (req, res) => {
+    return res.status(429).json([{
+      ok: false,
+      code: '429',
+      message: 'Too many requests, Please try again',
+    }]);
+  },
 });
 
-app.use(lim);
-app.use(exp.json());
+app.use(limiter);
+app.use(express.json());
 
-const auth = (req: Request, res: Response, next: Function) => {
-  const hdr = req.headers['authorization'];
+// Middleware for Basic Authentication
+const authenticate = (req: Request, res: Response, next: Function) => {
+  const auth = req.headers['authorization'];
 
-  if (!hdr) {
+  if (!auth) {
     res.setHeader('WWW-Authenticate', 'Basic');
     return res.status(401).json([{ ok: false, code: '401', message: 'Authorization required' }]);
   }
 
-  const [user, pwd] = Buffer.from(hdr.split(' ')[1], 'base64').toString().split(':');
+  const credentials = Buffer.from(auth.split(' ')[1], 'base64').toString().split(':');
+  const [username, password] = credentials;
 
-  const usr = 'admin';
-  const pass = 'admin#1234';
+  // Replace these values with your actual username and password
+  const validUsername = 'admin';
+  const validPassword = 'admin#1234';
 
-  return (user === usr && pwd === pass) ? next() : res.status(401).json([{ ok: false, code: '401', message: 'Invalid credentials' }]);
+  if (username === validUsername && password === validPassword) {
+    return next(); // Allow access
+  } else {
+    return res.status(401).json([{ ok: false, code: '401', message: 'Invalid credentials' }]);
+  }
 };
 
-function parseCks(c: string | undefined): { [k: string]: string } {
-  const cks: { [k: string]: string } = {};
-  c?.split(';').forEach(cookie => {
-    const [k, v] = cookie.split('=');
-    if (k && v) cks[k.trim()] = decodeURIComponent(v.trim());
-  });
-  return cks;
+// Parse cookies
+function parseCookies(c: string | undefined): { [k: string]: string } {
+  const cookies: { [k: string]: string } = {};
+  if (c) {
+    c.split(';').forEach(cookie => {
+      const [k, v] = cookie.split('=');
+      if (k && v) {
+        cookies[k.trim()] = decodeURIComponent(v.trim());
+      }
+    });
+  }
+  return cookies;
 }
 
+// Perform calculation
 function calc(op: string, val: number, num: number): { n: number; m: string } {
   switch (op) {
     case 'add': return { n: num + val, m: "Numbers Increased" };
@@ -49,11 +68,13 @@ function calc(op: string, val: number, num: number): { n: number; m: string } {
   }
 }
 
-function hReq(req: Request, res: Response) {
+// Handle request
+function handleReq(req: Request, res: Response) {
   try {
     let op: string | undefined;
     let val: number;
 
+    // Get operation and value
     if (req.method === 'GET') {
       const { add, reduce, multiply, divided } = req.query as { add?: string; reduce?: string; multiply?: string; divided?: string };
       op = Object.keys(req.query).find(k => ['add', 'reduce', 'multiply', 'divided'].includes(k));
@@ -62,38 +83,74 @@ function hReq(req: Request, res: Response) {
       const { operation, value } = req.body;
       op = operation;
       val = value;
-    } else {
-      return res.status(405).json([{ ok: true, code: '405', message: 'Method Not Allowed' }]);
-    }
+    } else if (req.method === "PUT") {
+   res.status(405).json([{ ok: true, code: '405', message: 'Method Not Allowed'}])
+    } else if (req.method === "DELETE") {
+   res.status(405).json([{ ok: true, code: '405', message: 'Method Not Allowed'}])
+    } else if (req.method === "PATCH") {
+   res.status(405).json([{ ok: true, code: '405', message: 'Method Not Allowed'}])
+    } 
 
     if (!op) return res.status(400).json([{ ok: false, code: '400', message: 'Operation not specified' }]);
     if (isNaN(val)) return res.status(400).json([{ ok: false, code: '400', message: 'Invalid value for operation' }]);
 
-    const cks = parseCks(req.headers.cookie);
-    let num = parseInt(cks['number'] || '0', 10);
+    // Get cookies and perform calculation
+    const cookies = parseCookies(req.headers.cookie);
+    let num = parseInt(cookies['number'] || '0', 10);
     const { n, m } = calc(op, val, num);
 
-    const secure = req.secure || req.headers['x-forwarded-proto'] === 'https';
+    const isSecure = req.secure || req.headers['x-forwarded-proto'] === 'https';
     const expDate = new Date();
     expDate.setHours(expDate.getHours() + 24);
 
-    res.setHeader('Set-Cookie', `number=${n}; HttpOnly; ${secure ? 'Secure;' : ''} Expires=${expDate.toUTCString()}; Path=/`);
+    // Set cookie
+    res.setHeader('Set-Cookie', `number=${n}; HttpOnly; ${isSecure ? 'Secure;' : ''} Expires=${expDate.toUTCString()}; Path=/`);
 
     res.json([{ ok: true, code: '200', message: m, data: { number: n } }]);
-  } catch (err: unknown) {
-    console.error('Error in /api/calc:', err);
-    const isDivErr = (err instanceof Error && err.message === 'Division by zero');
-    res.status(isDivErr ? 400 : 500).json([{ ok: false, code: isDivErr ? '400' : '500', message: isDivErr ? 'Division by zero' : 'Internal server error', error: String(err) }]);
+  } catch (error: unknown) {
+    console.error('Error in /api/calc:', error);
+    if (error instanceof Error && error.message === 'Division by zero') {
+      res.status(400).json([{ ok: false, code: '400', message: 'Division by zero' }]);
+    } else {
+      res.status(500).json([{ ok: false, code: '500', message: 'Internal server error', error: String(error) }]);
+    }
   }
 }
 
-app.get('/api/calc', hReq);
-app.post('/api/calc', hReq);
-app.put('/api/calc', hReq);
-app.delete('/api/calc', hReq);
-app.patch('/api/calc', hReq);
+// Routes
+app.get('/api/calc', handleReq);
+app.post('/api/calc', handleReq);
+app.put('/api/calc', handleReq);
+app.delete('/api/calc', handleReq);
+app.patch('/api/calc', handleReq);
+app.get('/api/countCharacters', (req: Request, res: Response) => {
+  const { text } = req.query;
 
-app.get('/api/auth', auth, (req: Request, res: Response) => {
+  if (!text || typeof text !== 'string') {
+    return res.status(400).json([{ ok: false, code: '400', message: 'Text query parameter is required and must be a string' }]);
+  }
+
+  // Count all characters including text, symbols, and numbers
+  const charCount = text.length;
+  
+  return res.status(200).json([{ ok: true, code: '200', message: 'Character count successful', data: { total: charCount } }]);
+});
+
+app.post('/api/countCharacters', (req: Request, res: Response) => {
+  const { text } = req.body;
+
+  if (!text || typeof text !== 'string') {
+    return res.status(400).json([{ ok: false, code: '400', message: 'Text is required and must be a string' }]);
+  }
+
+  // Count all characters including text, symbols, and numbers
+  const charCount = text.length;
+  
+  return res.status(200).json([{ ok: true, code: '200', message: 'Character count successful', data: { total: charCount } }]);
+});
+
+// Protected route
+app.get('/api/auth', authenticate, (req: Request, res: Response) => {
   res.json([{ ok: true, code: '200', message: 'Authenticated successfully!' }]);
 });
 
