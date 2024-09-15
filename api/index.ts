@@ -1,80 +1,96 @@
-import express, { Express, Request, Response } from 'express';
+import exp, { Express, Request, Response } from 'express';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import rateLimit from 'express-rate-limit';
 
-const app: Express = express();
-const limiter = rateLimit({
-  windowMs: 300000, // 5 minutes
-  max: 120, // limit each IP to 120 requests per windowMs
-  message: (req, res) => {
-    return res.status(429).json([{
-      ok: false,
-      code: '429',
-      message: 'Too many requests, Please try again',
-    }]);
-  },
+const app: Express = exp();
+
+// Rate Limiter
+const lim = rateLimit({
+  windowMs: 300000,
+  max: 120,
+  message: (req, res) => res.status(429).json([{ ok: false, code: '429', message: 'Too many requests, Please try again' }]),
 });
 
-app.use(limiter);
-app.use(express.json());
+app.use(lim);
+app.use(exp.json());
 
-// Middleware for Basic Authentication
-const authenticate = (req: Request, res: Response, next: Function) => {
-  const auth = req.headers['authorization'];
+// Authorization Middleware
+const auth = (req: Request, res: Response, next: Function) => {
+  const hdr = req.headers['authorization'];
 
-  if (!auth) {
+  if (!hdr) {
     res.setHeader('WWW-Authenticate', 'Basic');
     return res.status(401).json([{ ok: false, code: '401', message: 'Authorization required' }]);
   }
 
-  const credentials = Buffer.from(auth.split(' ')[1], 'base64').toString().split(':');
-  const [username, password] = credentials;
+  const [user, pwd] = Buffer.from(hdr.split(' ')[1], 'base64').toString().split(':');
 
-  // Replace these values with your actual username and password
-  const validUsername = 'admin';
-  const validPassword = 'admin#1234';
+  const usr = 'admin';
+  const pass = 'admin#1234';
 
-  if (username === validUsername && password === validPassword) {
-    return next(); // Allow access
-  } else {
-    return res.status(401).json([{ ok: false, code: '401', message: 'Invalid credentials' }]);
-  }
+  return (user === usr && pwd === pass) ? next() : res.status(401).json([{ ok: false, code: '401', message: 'Invalid credentials' }]);
 };
 
-// Parse cookies
-function parseCookies(c: string | undefined): { [k: string]: string } {
-  const cookies: { [k: string]: string } = {};
-  if (c) {
-    c.split(';').forEach(cookie => {
-      const [k, v] = cookie.split('=');
-      if (k && v) {
-        cookies[k.trim()] = decodeURIComponent(v.trim());
-      }
-    });
+// Helper Function for Counting Characters
+function countChars(text: string) {
+  let symbols = 0, alphabet = 0, numbers = 0, others = 0;
+
+  for (const char of text) {
+    if (/[a-zA-Z]/.test(char)) {
+      alphabet++;
+    } else if (/[0-9]/.test(char)) {
+      numbers++;
+    } else if (/[\W_]/.test(char)) {
+      symbols++;
+    } else {
+      others++;  // This captures spaces and any other characters
+    }
   }
-  return cookies;
+
+  const total = alphabet + numbers + symbols + others;
+
+  return {
+    symbols,
+    alphabet,
+    numbers,
+    others,
+    total
+  };
 }
 
-// Perform calculation
-function calc(op: string, val: number, num: number): { n: number; m: string } {
-  switch (op) {
-    case 'add': return { n: num + val, m: "Numbers Increased" };
-    case 'reduce': return { n: num - val, m: "Reduced Numbers" };
-    case 'multiply': return { n: num * val, m: "Multiplied Numbers" };
-    case 'divided':
-      if (val === 0) throw new Error('Division by zero');
-      return { n: num / val, m: "Divided Numbers" };
-    default: throw new Error('Invalid operation');
+// Character count handler (using function instead of const)
+function charCountHandler(req: Request, res: Response) {
+  let text: string;
+
+  if (req.method === 'GET') {
+    // Get text from query params for GET
+    text = req.query.text as string;
+
+    if (!text || typeof text !== 'string') {
+      return res.status(400).json([{ ok: false, code: '400', message: 'Text query parameter is required and must be a string' }]);
+    }
+  } else if (req.method === 'POST') {
+    // Get text from request body for POST
+    text = req.body.text;
+
+    if (!text || typeof text !== 'string') {
+      return res.status(400).json([{ ok: false, code: '400', message: 'Text is required in the request body and must be a string' }]);
+    }
+  } else {
+    return res.status(405).json([{ ok: false, code: '405', message: 'Method Not Allowed' }]);
   }
+
+  // Use the helper function to count characters
+  const result = countChars(text);
+  return res.json([{ ok: true, code: '200', message: 'Character count successful', data: result }]);
 }
 
-// Handle request
-function handleReq(req: Request, res: Response) {
+// Calculation handler
+function hReq(req: Request, res: Response) {
   try {
     let op: string | undefined;
     let val: number;
 
-    // Get operation and value
     if (req.method === 'GET') {
       const { add, reduce, multiply, divided } = req.query as { add?: string; reduce?: string; multiply?: string; divided?: string };
       op = Object.keys(req.query).find(k => ['add', 'reduce', 'multiply', 'divided'].includes(k));
@@ -83,77 +99,45 @@ function handleReq(req: Request, res: Response) {
       const { operation, value } = req.body;
       op = operation;
       val = value;
-    } else if (req.method === "PUT") {
-   res.status(405).json([{ ok: true, code: '405', message: 'Method Not Allowed'}])
-    } else if (req.method === "DELETE") {
-   res.status(405).json([{ ok: true, code: '405', message: 'Method Not Allowed'}])
-    } else if (req.method === "PATCH") {
-   res.status(405).json([{ ok: true, code: '405', message: 'Method Not Allowed'}])
-    } 
+    } else {
+      return res.status(405).json([{ ok: true, code: '405', message: 'Method Not Allowed' }]);
+    }
 
     if (!op) return res.status(400).json([{ ok: false, code: '400', message: 'Operation not specified' }]);
     if (isNaN(val)) return res.status(400).json([{ ok: false, code: '400', message: 'Invalid value for operation' }]);
 
-    // Get cookies and perform calculation
-    const cookies = parseCookies(req.headers.cookie);
-    let num = parseInt(cookies['number'] || '0', 10);
+    const cks = parseCks(req.headers.cookie);
+    let num = parseInt(cks['number'] || '0', 10);
     const { n, m } = calc(op, val, num);
 
-    const isSecure = req.secure || req.headers['x-forwarded-proto'] === 'https';
+    const secure = req.secure || req.headers['x-forwarded-proto'] === 'https';
     const expDate = new Date();
     expDate.setHours(expDate.getHours() + 24);
 
-    // Set cookie
-    res.setHeader('Set-Cookie', `number=${n}; HttpOnly; ${isSecure ? 'Secure;' : ''} Expires=${expDate.toUTCString()}; Path=/`);
+    res.setHeader('Set-Cookie', `number=${n}; HttpOnly; ${secure ? 'Secure;' : ''} Expires=${expDate.toUTCString()}; Path=/`);
 
     res.json([{ ok: true, code: '200', message: m, data: { number: n } }]);
-  } catch (error: unknown) {
-    console.error('Error in /api/calc:', error);
-    if (error instanceof Error && error.message === 'Division by zero') {
-      res.status(400).json([{ ok: false, code: '400', message: 'Division by zero' }]);
-    } else {
-      res.status(500).json([{ ok: false, code: '500', message: 'Internal server error', error: String(error) }]);
-    }
+  } catch (err: unknown) {
+    console.error('Error in /api/calc:', err);
+    const isDivErr = (err instanceof Error && err.message === 'Division by zero');
+    res.status(isDivErr ? 400 : 500).json([{ ok: false, code: isDivErr ? '400' : '500', message: isDivErr ? 'Division by zero' : 'Internal server error', error: String(err) }]);
   }
 }
 
-// Routes
-app.get('/api/calc', handleReq);
-app.post('/api/calc', handleReq);
-app.put('/api/calc', handleReq);
-app.delete('/api/calc', handleReq);
-app.patch('/api/calc', handleReq);
-app.get('/api/countCharacters', (req: Request, res: Response) => {
-  const { text } = req.query;
+// Use app.use for all routes
 
-  if (!text || typeof text !== 'string') {
-    return res.status(400).json([{ ok: false, code: '400', message: 'Text query parameter is required and must be a string' }]);
-  }
+// /api/charCount for GET and POST
+app.use('/api/charCount', (req, res) => charCountHandler(req, res));
 
-  // Count all characters including text, symbols, and numbers
-  const charCount = text.length;
-  
-  return res.status(200).json([{ ok: true, code: '200', message: 'Character count successful', data: { total: charCount } }]);
-});
+// /api/calc for all methods
+app.use('/api/calc', (req, res) => hReq(req, res));
 
-app.post('/api/countCharacters', (req: Request, res: Response) => {
-  const { text } = req.body;
-
-  if (!text || typeof text !== 'string') {
-    return res.status(400).json([{ ok: false, code: '400', message: 'Text is required and must be a string' }]);
-  }
-
-  // Count all characters including text, symbols, and numbers
-  const charCount = text.length;
-  
-  return res.status(200).json([{ ok: true, code: '200', message: 'Character count successful', data: { total: charCount } }]);
-});
-
-// Protected route
-app.get('/api/auth', authenticate, (req: Request, res: Response) => {
+// /api/auth with auth middleware
+app.use('/api/auth', auth, (req, res) => {
   res.json([{ ok: true, code: '200', message: 'Authenticated successfully!' }]);
 });
 
+// Default Export Handler for Vercel
 export default function handler(req: VercelRequest, res: VercelResponse) {
   app(req as any, res as any);
 }
