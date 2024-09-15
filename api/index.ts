@@ -5,13 +5,13 @@ import rateLimit from 'express-rate-limit';
 const app: Express = exp();
 
 // Rate Limiter
-const lim = rateLimit({
+const rl = rateLimit({
   windowMs: 300000,
   max: 120,
   message: (req, res) => res.status(429).json([{ ok: false, code: '429', message: 'Too many requests, Please try again' }]),
 });
 
-app.use(lim);
+app.use(rl);
 app.use(exp.json());
 
 // Authorization Middleware
@@ -32,7 +32,7 @@ const auth = (req: Request, res: Response, next: Function) => {
 };
 
 // Helper Function for Counting Characters
-function countChars(text: string) {
+function countCharsHelper(text: string) {
   let symbols = 0, alphabet = 0, numbers = 0, spaces = 0, others = 0;
 
   for (const char of text) {
@@ -66,7 +66,7 @@ function countChars(text: string) {
 
 
 // Character count handler (using function instead of const)
-function charCountHandler(req: Request, res: Response) {
+function txtCountHandler(req: Request, res: Response) {
   let text: string;
 
   if (req.method === 'GET') {
@@ -88,12 +88,12 @@ function charCountHandler(req: Request, res: Response) {
   }
 
   // Use the helper function to count characters
-  const result = countChars(text);
+  const result = countCharsHelper(text);
   return res.json([{ ok: true, code: '200', message: 'Character count successful', data: result }]);
 }
 
 // Calculation handler
-function hReq(req: Request, res: Response) {
+function calcHandler(req: Request, res: Response) {
   try {
     let op: string | undefined;
     let val: number;
@@ -125,7 +125,7 @@ function hReq(req: Request, res: Response) {
 
     res.json([{ ok: true, code: '200', message: m, data: { number: n } }]);
   } catch (err: unknown) {
-    console.error('Error in /api/calc:', err);
+    console.error('Error :\n', err);
     const isDivErr = (err instanceof Error && err.message === 'Division by zero');
     res.status(isDivErr ? 400 : 500).json([{ ok: false, code: isDivErr ? '400' : '500', message: isDivErr ? 'Division by zero' : 'Internal server error', error: String(err) }]);
   }
@@ -134,10 +134,10 @@ function hReq(req: Request, res: Response) {
 // Use app.use for all routes
 
 // /api/charCount for GET and POST
-app.use('/api/charCount', (req, res) => charCountHandler(req, res));
+app.use('/api/charCount', (req, res) => txtHandler(req, res));
 
 // /api/calc for all methods
-app.use('/api/calc', (req, res) => hReq(req, res));
+app.use('/api/calc', (req, res) => calcHandler(req, res));
 
 // /api/auth with auth middleware
 app.use('/api/auth', auth, (req, res) => {
