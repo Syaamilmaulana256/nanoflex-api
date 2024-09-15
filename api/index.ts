@@ -33,30 +33,37 @@ const auth = (req: Request, res: Response, next: Function) => {
 
 // Helper Function for Counting Characters
 function countChars(text: string) {
-  let symbols = 0, alphabet = 0, numbers = 0, others = 0;
+  let symbols = 0, alphabet = 0, numbers = 0, spaces = 0, others = 0;
 
   for (const char of text) {
-    if (/[a-zA-Z]/.test(char)) {
+    if (/\p{L}/u.test(char)) {
+      // Unicode letter, including extended sets like 𝕝, 𝕚, etc.
       alphabet++;
     } else if (/[0-9]/.test(char)) {
       numbers++;
-    } else if (/[\W_]/.test(char)) {
+    } else if (/\s/.test(char)) {
+      // Space characters (e.g., space, tab, new line)
+      spaces++;
+    } else if (/[\p{P}\p{S}]/u.test(char)) {
+      // Unicode punctuation and symbols
       symbols++;
     } else {
-      others++;  // This captures spaces and any other characters
+      others++;  // Any other characters that don't fall into the above categories
     }
   }
 
-  const total = alphabet + numbers + symbols + others;
+  const total = alphabet + numbers + symbols + spaces + others;
 
   return {
     symbols,
     alphabet,
     numbers,
+    spaces,
     others,
     total
   };
 }
+
 
 // Character count handler (using function instead of const)
 function charCountHandler(req: Request, res: Response) {
