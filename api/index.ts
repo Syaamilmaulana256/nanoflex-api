@@ -56,15 +56,13 @@ function calculate(op: string, val: number, num: number): { n: number; m: string
 
 // Helper Function for Counting Characters
 function countChars(text: string) {
-  let symbols = 0, alphabet = 0, numbers = 0, spaces = 0, others = 0;
+  let symbols = 0, alphabet = 0, numbers = 0, others = 0;
 
   for (const char of text) {
     if (/\p{L}/u.test(char)) {
       alphabet++;
     } else if (/[0-9]/.test(char)) {
       numbers++;
-    } else if (/\s/.test(char)) {
-      spaces++;
     } else if (/[\p{P}\p{S}]/u.test(char)) {
       symbols++;
     } else {
@@ -72,13 +70,12 @@ function countChars(text: string) {
     }
   }
 
-  const total = alphabet + numbers + symbols + spaces + others;
+  const total = alphabet + numbers + symbols + others;
 
   return {
     symbols,
     alphabet,
     numbers,
-    spaces,
     others,
     total
   };
@@ -100,7 +97,7 @@ function countHandler(req: Request, res: Response) {
     if (!text || typeof text !== 'string') {
       return res.status(400).json([{ ok: false, code: '400', message: 'Text is required in the request body and must be a string' }]);
     }
-  } else {
+  } else if (req.method === "PUT" || req.method === "DELETE" || req.method === "PATCH") {
     return res.status(405).json([{ ok: false, code: '405', message: 'Method Not Allowed' }]);
   }
 
@@ -122,8 +119,8 @@ function calculateHandler(req: Request, res: Response) {
       const { operation, value } = req.body;
       operation = operation;
       value = value;
-    } else {
-      return res.status(405).json([{ ok: true, code: '405', message: 'Method Not Allowed' }]);
+    } else if (req.method === "PUT" || req.method === "DELETE" || req.method === "PATCH") {
+    return res.status(405).json([{ ok: false, code: '405', message: 'Method Not Allowed' }]);
     }
 
     if (!operation) return res.status(400).json([{ ok: false, code: '400', message: 'Operation not specified' }]);
