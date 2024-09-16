@@ -134,7 +134,7 @@ function calcHandler(req: Request, res: Response) {
 // Use app.use for all routes
 
 // /api/charCount for GET and POST
-app.use('/api/charCount', (req, res) => txtHandler(req, res));
+app.use('/api/charCount', (req, res) => txtCountHandler(req, res));
 
 // /api/calc for all methods
 app.use('/api/calc', (req, res) => calcHandler(req, res));
