@@ -30,7 +30,15 @@ const auth = (req: Request, res: Response, next: Function) => {
 
   return (user === usr && pwd === pass) ? next() : res.status(401).json([{ ok: false, code: '401', message: 'Invalid credentials' }]);
 };
-
+// Parae Cookie Helper
+function parseCks(c: string | undefined): { [k: string]: string } {
+  const cks: { [k: string]: string } = {};
+  c?.split(';').forEach(cookie => {
+    const [k, v] = cookie.split('=');
+    if (k && v) cks[k.trim()] = decodeURIComponent(v.trim());
+  });
+  return cks;
+                                  }
 // Helper Function for Counting Characters
 function countCharsHelper(text: string) {
   let symbols = 0, alphabet = 0, numbers = 0, spaces = 0, others = 0;
