@@ -28,7 +28,7 @@ const authorize = (req: Request, res: Response, next: Function) => {
   const username = 'AdMiNiStRaToR';
   const password = 'ADMINistrator℅%℅%1212';
 
-  return (user === username && pwd === password) ? next() : res.status(401).json([{ ok: false, code: '401', message: 'Invalid Crendential' }]);
+  return (user === username && pwd === password) ? next() : res.status(401).json([{ ok: false, code: '401', message: 'Invalid credentials' }]);
 };
 
 // Parse Cookie Helper
