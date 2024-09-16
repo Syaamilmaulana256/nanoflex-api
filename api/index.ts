@@ -38,7 +38,19 @@ function parseCks(c: string | undefined): { [k: string]: string } {
     if (k && v) cks[k.trim()] = decodeURIComponent(v.trim());
   });
   return cks;
-                                  }
+          }
+// Helper Function for Calculator
+function calcHelper(op: string, val: number, num: number): { n: number; m: string } {
+  switch (op) {
+    case 'add': return { n: num + val, m: "Numbers Increased" };
+    case 'reduce': return { n: num - val, m: "Reduced Numbers" };
+    case 'multiply': return { n: num * val, m: "Multiplied Numbers" };
+    case 'divided':
+      if (val === 0) throw new Error('Division by zero');
+      return { n: num / val, m: "Divided Numbers" };
+    default: throw new Error('Invalid operation');
+  }
+}
 // Helper Function for Counting Characters
 function countCharsHelper(text: string) {
   let symbols = 0, alphabet = 0, numbers = 0, spaces = 0, others = 0;
@@ -123,7 +135,7 @@ function calcHandler(req: Request, res: Response) {
 
     const cks = parseCks(req.headers.cookie);
     let num = parseInt(cks['number'] || '0', 10);
-    const { n, m } = calc(op, val, num);
+    const { n, m } = calcHelper(op, val, num);
 
     const secure = req.secure || req.headers['x-forwarded-proto'] === 'https';
     const expDate = new Date();
