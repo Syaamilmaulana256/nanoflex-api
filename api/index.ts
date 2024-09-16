@@ -1,46 +1,48 @@
-import exp, { Express, Request, Response } from 'express';
+import express, { Express, Request, Response } from 'express';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import rateLimit from 'express-rate-limit';
 
-const app: Express = exp();
+const app: Express = express();
 
 // Rate Limiter
-const rl = rateLimit({
+const limiter = rateLimit({
   windowMs: 300000,
-  max: 120,
+  max: 96,
   message: (req, res) => res.status(429).json([{ ok: false, code: '429', message: 'Too many requests, Please try again' }]),
 });
 
-app.use(rl);
-app.use(exp.json());
+app.use(limiter);
+app.use(express.json());
 
 // Authorization Middleware
-const auth = (req: Request, res: Response, next: Function) => {
-  const hdr = req.headers['authorization'];
+const authorize = (req: Request, res: Response, next: Function) => {
+  const authHeader = req.headers['authorization'];
 
-  if (!hdr) {
+  if (!authHeader) {
     res.setHeader('WWW-Authenticate', 'Basic');
     return res.status(401).json([{ ok: false, code: '401', message: 'Authorization required' }]);
   }
 
-  const [user, pwd] = Buffer.from(hdr.split(' ')[1], 'base64').toString().split(':');
+  const [user, pwd] = Buffer.from(authHeader.split(' ')[1], 'base64').toString().split(':');
 
-  const usr = 'admin';
-  const pass = 'admin#1234';
+  const username = 'AdMiNiStRaToR';
+  const password = 'ADMINistrator℅%℅%1212';
 
-  return (user === usr && pwd === pass) ? next() : res.status(401).json([{ ok: false, code: '401', message: 'Invalid credentials' }]);
+  return (user === username && pwd === password) ? next() : res.status(401).json([{ ok: false, code: '401', message: 'Invalid Crendential' }]);
 };
-// Parae Cookie Helper
-function parseCks(c: string | undefined): { [k: string]: string } {
-  const cks: { [k: string]: string } = {};
-  c?.split(';').forEach(cookie => {
-    const [k, v] = cookie.split('=');
-    if (k && v) cks[k.trim()] = decodeURIComponent(v.trim());
+
+// Parse Cookie Helper
+function parseCookies(cookie: string | undefined): { [k: string]: string } {
+  const cookies: { [k: string]: string } = {};
+  cookie?.split(';').forEach(c => {
+    const [key, value] = c.split('=');
+    if (key && value) cookies[key.trim()] = decodeURIComponent(value.trim());
   });
-  return cks;
-          }
+  return cookies;
+}
+
 // Helper Function for Calculator
-function calcHelper(op: string, val: number, num: number): { n: number; m: string } {
+function calculate(op: string, val: number, num: number): { n: number; m: string } {
   switch (op) {
     case 'add': return { n: num + val, m: "Numbers Increased" };
     case 'reduce': return { n: num - val, m: "Reduced Numbers" };
@@ -51,24 +53,22 @@ function calcHelper(op: string, val: number, num: number): { n: number; m: strin
     default: throw new Error('Invalid operation');
   }
 }
+
 // Helper Function for Counting Characters
-function countCharsHelper(text: string) {
+function countChars(text: string) {
   let symbols = 0, alphabet = 0, numbers = 0, spaces = 0, others = 0;
 
   for (const char of text) {
     if (/\p{L}/u.test(char)) {
-      // Unicode letter, including extended sets like 𝕝, 𝕚, etc.
       alphabet++;
     } else if (/[0-9]/.test(char)) {
       numbers++;
     } else if (/\s/.test(char)) {
-      // Space characters (e.g., space, tab, new line)
       spaces++;
     } else if (/[\p{P}\p{S}]/u.test(char)) {
-      // Unicode punctuation and symbols
       symbols++;
     } else {
-      others++;  // Any other characters that don't fall into the above categories
+      others++;
     }
   }
 
@@ -84,20 +84,17 @@ function countCharsHelper(text: string) {
   };
 }
 
-
-// Character count handler (using function instead of const)
-function txtCountHandler(req: Request, res: Response) {
+// Character count handler
+function countHandler(req: Request, res: Response) {
   let text: string;
 
   if (req.method === 'GET') {
-    // Get text from query params for GET
     text = req.query.text as string;
 
     if (!text || typeof text !== 'string') {
       return res.status(400).json([{ ok: false, code: '400', message: 'Text query parameter is required and must be a string' }]);
     }
   } else if (req.method === 'POST') {
-    // Get text from request body for POST
     text = req.body.text;
 
     if (!text || typeof text !== 'string') {
@@ -107,35 +104,34 @@ function txtCountHandler(req: Request, res: Response) {
     return res.status(405).json([{ ok: false, code: '405', message: 'Method Not Allowed' }]);
   }
 
-  // Use the helper function to count characters
-  const result = countCharsHelper(text);
+  const result = countChars(text);
   return res.json([{ ok: true, code: '200', message: 'Character count successful', data: result }]);
 }
 
 // Calculation handler
-function calcHandler(req: Request, res: Response) {
+function calculateHandler(req: Request, res: Response) {
   try {
-    let op: string | undefined;
-    let val: number;
+    let operation: string | undefined;
+    let value: number;
 
     if (req.method === 'GET') {
       const { add, reduce, multiply, divided } = req.query as { add?: string; reduce?: string; multiply?: string; divided?: string };
-      op = Object.keys(req.query).find(k => ['add', 'reduce', 'multiply', 'divided'].includes(k));
-      val = parseInt(req.query[op as string] as string, 10);
+      operation = Object.keys(req.query).find(k => ['add', 'reduce', 'multiply', 'divided'].includes(k));
+      value = parseInt(req.query[operation as string] as string, 10);
     } else if (req.method === 'POST') {
       const { operation, value } = req.body;
-      op = operation;
-      val = value;
+      operation = operation;
+      value = value;
     } else {
       return res.status(405).json([{ ok: true, code: '405', message: 'Method Not Allowed' }]);
     }
 
-    if (!op) return res.status(400).json([{ ok: false, code: '400', message: 'Operation not specified' }]);
-    if (isNaN(val)) return res.status(400).json([{ ok: false, code: '400', message: 'Invalid value for operation' }]);
+    if (!operation) return res.status(400).json([{ ok: false, code: '400', message: 'Operation not specified' }]);
+    if (isNaN(value)) return res.status(400).json([{ ok: false, code: '400', message: 'Invalid value for operation' }]);
 
-    const cks = parseCks(req.headers.cookie);
-    let num = parseInt(cks['number'] || '0', 10);
-    const { n, m } = calcHelper(op, val, num);
+    const cookies = parseCookies(req.headers.cookie);
+    let num = parseInt(cookies['number'] || '0', 10);
+    const { n, m } = calculate(operation, value, num);
 
     const secure = req.secure || req.headers['x-forwarded-proto'] === 'https';
     const expDate = new Date();
@@ -154,14 +150,14 @@ function calcHandler(req: Request, res: Response) {
 // Use app.use for all routes
 
 // /api/charCount for GET and POST
-app.use('/api/charCount', (req, res) => txtCountHandler(req, res));
+app.use('/api/charCount', (req, res) => countHandler(req, res));
 
 // /api/calc for all methods
-app.use('/api/calc', (req, res) => calcHandler(req, res));
+app.use('/api/calc', (req, res) => calculateHandler(req, res));
 
 // /api/auth with auth middleware
-app.use('/api/auth', auth, (req, res) => {
-  res.json([{ ok: true, code: '200', message: 'Authenticated successfully!' }]);
+app.use('/api/auth', authorize, (req, res) => {
+  res.json([{ ok: true, code: '200', message: 'DevTools' }]);
 });
 
 // Default Export Handler for Vercel
