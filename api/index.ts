@@ -5,44 +5,44 @@ import rateLimit from 'express-rate-limit';
 const app: Express = express();
 
 // Rate Limiter
-const limiter = rateLimit({
+const rl = rateLimit({
   windowMs: 300000,
   max: 96,
   message: (req, res) => res.status(429).json([{ ok: false, code: '429', message: 'Too many requests, Please try again' }]),
 });
 
-app.use(limiter);
+app.use(rl);
 app.use(express.json());
 
 // Authorization Middleware
-const authorize = (req: Request, res: Response, next: Function) => {
-  const authHeader = req.headers['authorization'];
+const auth = (req: Request, res: Response, next: Function) => {
+  const hdr = req.headers['authorization'];
 
-  if (!authHeader) {
+  if (!hdr) {
     res.setHeader('WWW-Authenticate', 'Basic');
     return res.status(401).json([{ ok: false, code: '401', message: 'Authorization required' }]);
   }
 
-  const [user, pwd] = Buffer.from(authHeader.split(' ')[1], 'base64').toString().split(':');
+  const [user, pwd] = Buffer.from(hdr.split(' ')[1], 'base64').toString().split(':');
 
-  const username = 'AdMiNiStRaToR';
-  const password = 'ADMINistrator℅%℅%1212';
+  const usr = 'AdMiNiStRaToR';
+  const pass = 'ADMINistrator℅%℅%1212';
 
-  return (user === username && pwd === password) ? next() : res.status(401).json([{ ok: false, code: '401', message: 'Invalid credentials' }]);
+  return (user === usr && pwd === pass) ? next() : res.status(401).json([{ ok: false, code: '401', message: 'Invalid credentials' }]);
 };
 
 // Parse Cookie Helper
-function parseCookies(cookie: string | undefined): { [k: string]: string } {
-  const cookies: { [k: string]: string } = {};
-  cookie?.split(';').forEach(c => {
-    const [key, value] = c.split('=');
-    if (key && value) cookies[key.trim()] = decodeURIComponent(value.trim());
+function parseCks(c: string | undefined): { [k: string]: string } {
+  const cks: { [k: string]: string } = {};
+  c?.split(';').forEach(cookie => {
+    const [k, v] = cookie.split('=');
+    if (k && v) cks[k.trim()] = decodeURIComponent(v.trim());
   });
-  return cookies;
+  return cks;
 }
 
 // Helper Function for Calculator
-function calculate(op: string, val: number, num: number): { n: number; m: string } {
+function calc(op: string, val: number, num: number): { n: number; m: string } {
   switch (op) {
     case 'add': return { n: num + val, m: "Numbers Increased" };
     case 'reduce': return { n: num - val, m: "Reduced Numbers" };
@@ -63,10 +63,10 @@ function countChars(text: string) {
       alphabet++;
     } else if (/[0-9]/.test(char)) {
       numbers++;
+    } else if (/\s/.test(char)) {
+      others++;
     } else if (/[\p{P}\p{S}]/u.test(char)) {
       symbols++;
-    } else {
-      others++;
     }
   }
 
@@ -82,7 +82,7 @@ function countChars(text: string) {
 }
 
 // Character count handler
-function countHandler(req: Request, res: Response) {
+function count(req: Request, res: Response) {
   let text: string;
 
   if (req.method === 'GET') {
@@ -99,6 +99,13 @@ function countHandler(req: Request, res: Response) {
     }
   } else if (req.method === "PUT" || req.method === "DELETE" || req.method === "PATCH") {
     return res.status(405).json([{ ok: false, code: '405', message: 'Method Not Allowed' }]);
+  } else if (req.method === 'OPTIONS' || req.method === 'HEAD') {
+    // Return the default response for OPTIONS and HEAD
+    res.setHeader('Allow', 'GET, POST, OPTIONS, HEAD');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, HEAD');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    return res.send();
   }
 
   const result = countChars(text);
@@ -106,29 +113,36 @@ function countHandler(req: Request, res: Response) {
 }
 
 // Calculation handler
-function calculateHandler(req: Request, res: Response) {
+function calc(req: Request, res: Response) {
   try {
-    let operation: string | undefined;
-    let value: number;
+    let op: string | undefined;
+    let val: number;
 
     if (req.method === 'GET') {
       const { add, reduce, multiply, divided } = req.query as { add?: string; reduce?: string; multiply?: string; divided?: string };
-      operation = Object.keys(req.query).find(k => ['add', 'reduce', 'multiply', 'divided'].includes(k));
-      value = parseInt(req.query[operation as string] as string, 10);
+      op = Object.keys(req.query).find(k => ['add', 'reduce', 'multiply', 'divided'].includes(k));
+      val = parseInt(req.query[op as string] as string, 10);
     } else if (req.method === 'POST') {
       const { operation, value } = req.body;
-      operation = operation;
-      value = value;
+      op = operation;
+      val = value;
     } else if (req.method === "PUT" || req.method === "DELETE" || req.method === "PATCH") {
     return res.status(405).json([{ ok: false, code: '405', message: 'Method Not Allowed' }]);
+    } else if (req.method === 'OPTIONS' || req.method === 'HEAD') {
+      // Return the default response for OPTIONS and HEAD
+      res.setHeader('Allow', 'GET, POST, OPTIONS, HEAD');
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, HEAD');
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+      return res.send();
     }
 
-    if (!operation) return res.status(400).json([{ ok: false, code: '400', message: 'Operation not specified' }]);
-    if (isNaN(value)) return res.status(400).json([{ ok: false, code: '400', message: 'Invalid value for operation' }]);
+    if (!op) return res.status(400).json([{ ok: false, code: '400', message: 'Operation not specified' }]);
+    if (isNaN(val)) return res.status(400).json([{ ok: false, code: '400', message: 'Invalid value for operation' }]);
 
-    const cookies = parseCookies(req.headers.cookie);
-    let num = parseInt(cookies['number'] || '0', 10);
-    const { n, m } = calculate(operation, value, num);
+    const cks = parseCks(req.headers.cookie);
+    let num = parseInt(cks['number'] || '0', 10);
+    const { n, m } = calc(op, val, num);
 
     const secure = req.secure || req.headers['x-forwarded-proto'] === 'https';
     const expDate = new Date();
@@ -147,17 +161,17 @@ function calculateHandler(req: Request, res: Response) {
 // Use app.use for all routes
 
 // /api/charCount for GET and POST
-app.use('/api/charCount', (req, res) => countHandler(req, res));
+app.use('/api/charCount', (req, res) => count(req, res));
 
 // /api/calc for all methods
-app.use('/api/calc', (req, res) => calculateHandler(req, res));
+app.use('/api/calc', (req, res) => calc(req, res));
 
 // /api/auth with auth middleware
-app.use('/api/auth', authorize, (req, res) => {
-  res.json([{ ok: true, code: '200', message: 'DevTools' }]);
+app.use('/api/auth', auth, (req, res) => {
+  res.json([{ ok: true, code: '200', message: 'Authenticated successfully!' }]);
 });
 
 // Default Export Handler for Vercel
 export default function handler(req: VercelRequest, res: VercelResponse) {
   app(req as any, res as any);
-}
+                    }
