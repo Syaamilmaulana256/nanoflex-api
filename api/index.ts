@@ -173,5 +173,5 @@ app.use('/api/auth', auth, (req, res) => {
 
 // Default Export Handler for Vercel
 export default function handler(req: VercelRequest, res: VercelResponse) {
-  app(req as any, res as any);
-                    }
+  app.handle(req as any, res as any);
+}
