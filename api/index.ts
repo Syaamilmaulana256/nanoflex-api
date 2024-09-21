@@ -58,7 +58,7 @@ function calc(op: string, val: number, num: number): { n: number; m: string } {
 
 // Helper Function for Counting Characters
 function countChars(text: string) {
-  let symbols = 0, alphabet = 0, numbers = 0, others = 0;
+  let symbols = 0, alphabet = 0, numbers = 0, spaces = 0, others = 0;
 
   for (const char of text) {
     if (/\p{L}/u.test(char)) {
@@ -66,18 +66,21 @@ function countChars(text: string) {
     } else if (/[0-9]/.test(char)) {
       numbers++;
     } else if (/\s/.test(char)) {
-      others++;
+      spaces++;
     } else if (/[\p{P}\p{S}]/u.test(char)) {
       symbols++;
+    } else {
+      others++;
     }
   }
 
-  const total = alphabet + numbers + symbols + others;
+  const total = alphabet + numbers + symbols + spaces + others;
 
   return {
     symbols,
     alphabet,
     numbers,
+    spaces,
     others,
     total
   };
