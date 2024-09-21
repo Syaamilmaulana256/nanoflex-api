@@ -85,7 +85,7 @@ function countChars(text: string) {
 
 // Character count handler
 function countHandler(req: Request, res: Response) {
-  let text: string; // Declare text variable here
+  let text: string = ""; // Declare text variable here
 
   if (req.method === 'GET') {
     text = req.query.text as string;
@@ -176,6 +176,6 @@ app.use('/api/auth', auth, (req: Request, res: Response) => {
 });
 
 // Default Export Handler for Vercel
-export default function handler(req: VercelRequest, res: VercelResponse) {
-  app.handle(req as any, res as any);
-}
+export default (req: VercelRequest, res: VercelResponse) => {
+  app(req as any, res as any);
+};
