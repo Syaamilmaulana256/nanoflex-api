@@ -6,7 +6,7 @@ const app: Express = express();
 
 // Rate Limiter
 const rl = rateLimit({
-  windowMs: 300000,
+  windowMs: 300000, // 5 minutes
   max: 96,
   message: (req: Request, res: Response) => {
     res.status(429).json([{ ok: false, code: '429', message: 'Too many requests, Please try again' }]);
@@ -118,12 +118,14 @@ function countHandler(req: Request, res: Response) {
 function calculateHandler(req: Request, res: Response) {
   try {
     let op: string | undefined;
-    let val: number;
+    let val: number = 0; // Declare val here with a default value
 
     if (req.method === 'GET') {
       const { add, reduce, multiply, divided } = req.query as { add?: string; reduce?: string; multiply?: string; divided?: string };
       op = Object.keys(req.query).find(k => ['add', 'reduce', 'multiply', 'divided'].includes(k));
-      val = parseInt(req.query[op as string] as string, 10);
+      if (op) { // Check if op exists before accessing the query parameter
+        val = parseInt(req.query[op as string] as string, 10); 
+      }
     } else if (req.method === 'POST') {
       const { operation, value } = req.body;
       op = operation;
