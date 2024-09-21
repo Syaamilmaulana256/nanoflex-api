@@ -8,7 +8,9 @@ const app: Express = express();
 const rl = rateLimit({
   windowMs: 300000,
   max: 96,
-  message: (req, res) => res.status(429).json([{ ok: false, code: '429', message: 'Too many requests, Please try again' }]),
+  message: (req: Request, res: Response) => {
+    res.status(429).json([{ ok: false, code: '429', message: 'Too many requests, Please try again' }]);
+  },
 });
 
 app.use(rl);
@@ -82,7 +84,7 @@ function countChars(text: string) {
 }
 
 // Character count handler
-function count(req: Request, res: Response) {
+function countHandler(req: Request, res: Response) {
   let text: string;
 
   if (req.method === 'GET') {
@@ -113,7 +115,7 @@ function count(req: Request, res: Response) {
 }
 
 // Calculation handler
-function calc(req: Request, res: Response) {
+function calculateHandler(req: Request, res: Response) {
   try {
     let op: string | undefined;
     let val: number;
@@ -127,7 +129,7 @@ function calc(req: Request, res: Response) {
       op = operation;
       val = value;
     } else if (req.method === "PUT" || req.method === "DELETE" || req.method === "PATCH") {
-    return res.status(405).json([{ ok: false, code: '405', message: 'Method Not Allowed' }]);
+      return res.status(405).json([{ ok: false, code: '405', message: 'Method Not Allowed' }]);
     } else if (req.method === 'OPTIONS' || req.method === 'HEAD') {
       // Return the default response for OPTIONS and HEAD
       res.setHeader('Allow', 'GET, POST, OPTIONS, HEAD');
@@ -161,17 +163,17 @@ function calc(req: Request, res: Response) {
 // Use app.use for all routes
 
 // /api/charCount for GET and POST
-app.use('/api/charCount', (req, res) => count(req, res));
+app.use('/api/charCount', (req: Request, res: Response) => countHandler(req, res));
 
 // /api/calc for all methods
-app.use('/api/calc', (req, res) => calc(req, res));
+app.use('/api/calc', (req: Request, res: Response) => calculateHandler(req, res));
 
 // /api/auth with auth middleware
-app.use('/api/auth', auth, (req, res) => {
+app.use('/api/auth', auth, (req: Request, res: Response) => {
   res.json([{ ok: true, code: '200', message: 'Authenticated successfully!' }]);
 });
 
 // Default Export Handler for Vercel
 export default function handler(req: VercelRequest, res: VercelResponse) {
-  app(req as any, res as any);
-                    }
+  app.handle(req as any, res as any);
+}
