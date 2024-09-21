@@ -85,7 +85,7 @@ function countChars(text: string) {
 
 // Character count handler
 function countHandler(req: Request, res: Response) {
-  let text: string;
+  let text: string; // Declare text variable here
 
   if (req.method === 'GET') {
     text = req.query.text as string;
@@ -124,7 +124,7 @@ function calculateHandler(req: Request, res: Response) {
       const { add, reduce, multiply, divided } = req.query as { add?: string; reduce?: string; multiply?: string; divided?: string };
       op = Object.keys(req.query).find(k => ['add', 'reduce', 'multiply', 'divided'].includes(k));
       if (op) { // Check if op exists before accessing the query parameter
-        val = parseInt(req.query[op as string] as string, 10); 
+        val = parseInt(req.query[op as string] as string, 10);
       }
     } else if (req.method === 'POST') {
       const { operation, value } = req.body;
