@@ -114,6 +114,9 @@ function countHandler(req: Request, res: Response) {
   }
 
   const result = countChars(text);
+  // Set custom headers
+  res.setHeader('Server', 'what a sigma');
+  res.setHeader('X-Powered-By', 'ur heart'); 
   return res.json([{ ok: true, code: '200', message: 'Character count successful', data: result }]);
 }
 
@@ -157,6 +160,10 @@ function calculateHandler(req: Request, res: Response) {
 
     res.setHeader('Set-Cookie', `number=${n}; HttpOnly; ${secure ? 'Secure;' : ''} Expires=${expDate.toUTCString()}; Path=/`);
 
+    // Set custom headers
+    res.setHeader('Server', 'what a sigma');
+    res.setHeader('X-Powered-By', 'ur heart');
+
     res.json([{ ok: true, code: '200', message: m, data: { number: n } }]);
   } catch (err: unknown) {
     console.error('Error :\n', err);
@@ -175,6 +182,9 @@ app.use('/api/calc', (req: Request, res: Response) => calculateHandler(req, res)
 
 // /api/auth with auth middleware
 app.use('/api/auth', auth, (req: Request, res: Response) => {
+  // Set custom headers
+  res.setHeader('Server', 'what a sigma');
+  res.setHeader('X-Powered-By', 'ur hearts');
   res.json([{ ok: true, code: '200', message: 'Authenticated successfully!' }]);
 });
 
