@@ -4,6 +4,10 @@ NanoFlex is a *lightweight API* built for <ins>*simple, beginner-friendly data m
 > [!CAUTION]
 > This API is **under development**, there may be many strange things, bugs and errors, report them by *opening issues* in this github repository
 
+## Becoming a Collaborator
+
+We welcome any collaborators from users with *feedback, testing suggestions, corrections* and other potential improvements to NanoFlex, You can become a collaborator by opening an issue with the tag `collaborator`.
+
 ## Quick Overview
 
 NanoFlex offers *two primary* endpoints for simple operations:
@@ -15,7 +19,8 @@ NanoFlex offers *two primary* endpoints for simple operations:
 
 ## Rate Limit 
 - *Before you use our API*, you should see what our API **Rate Limit** is to <ins>prevent high resource usage and this is important</ins>.
-- The minutes referred to in the table are to reset the request to normal, This happens if you use it many times, or spam occurs. If spam occurs for 5 minutes, then it will **Rate Limit**
+- The minutes referred to in the table are to *reset the request to default*, This happens if you use it *many times, or spam occurs*. If spam occurs for 5 minutes and the request exceeds, then it will **Rate Limit**
+  
 | Rate Limit | Minutes |
 | :---: | :---: |
 | **96 requests per IP** | *5 mins* |
@@ -23,7 +28,7 @@ NanoFlex offers *two primary* endpoints for simple operations:
 
 ### `/api/calc`
 
-This endpoint supports both GET and POST requests. The operations supported are "add", "reduce", "multiply" and "divide." The current number to operate on is stored in a session (cookie) and defaults to 0 if not initialized.  An error occurs if division is performed by 0.
+This endpoint supports both GET and POST requests. The operations supported are *"add", "reduce", "multiply":and "divide."* The current number to operate on is stored in a session (cookie) and defaults to 0 if not initialized.  An error occurs if division is performed by 0.
 
 **GET Request (Example):**
 
@@ -122,6 +127,3 @@ To report *issues, suggest or enhancements*, please create an issue on the proje
 *  The design prioritizes simplicity and assumes requests follow specific syntaxes or formats outlined for parameters and input.
 
 
-## Contributing
-
-We welcome any contributions from users with feedback, testing suggestions, corrections, and other potential improvements to NanoFlex (see the CONTRIBUTING document or guidelines, should that be included).
