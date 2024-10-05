@@ -1,31 +1,182 @@
-        body {
-            font-family: 'Poppins', sans-serif;
-        }
-        .oxanium-font {
-            font-family: 'Oxanium', cursive;
-        }
-        .result.success {
-            background-color: #e0ffe0;
-            border-color: #00cc00;
-        }
+/* index.css */
 
-        .result.error {
-            background-color: #ffe0e0;
-            border-color: #ff0000;
-        }
-.result {
-    border: 1px solid #ccc;
-    padding: 10px;
-    min-height: 100px;
-    margin-top: 20px;
-    white-space: pre-wrap;  /* Mengizinkan teks untuk membungkus ke baris berikutnya */
-    word-wrap: break-word;  /* Memastikan teks panjang dapat terputus dan dibungkus */
-    overflow-wrap: break-word; /* Opsi tambahan untuk kompatibilitas */
-    text-align: left;
-    font-size: 1rem;
-    overflow: hidden; /* Menyembunyikan bagian teks yang melampaui kontainer */
-    width: 100%; /* Memastikan kotak hasil menggunakan 100% lebar kontainer induk */
-    box-sizing: border-box; /* Memastikan padding termasuk dalam lebar total elemen */
-    max-width: 100%; /* Memastikan elemen tidak melebihi 100% lebar induknya */
+/* General styles */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #121212;
+  color: #eee;
+  margin: 0;
+  padding: 0;
 }
 
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1, h2 {
+  color: #eee;
+  margin-bottom: 10px;
+}
+
+p {
+  color: #ddd;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+/* Navbar styles */
+nav {
+  background-color: #1a1a1a;
+  padding: 10px 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+nav .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+nav a {
+  color: #eee;
+  text-decoration: none;
+  padding: 10px 15px;
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: #ddd;
+}
+
+/* Header styles */
+header {
+  background-image: linear-gradient(to right, #222, #111);
+  padding: 40px 0;
+  text-align: center;
+}
+
+header h1 {
+  margin-bottom: 20px;
+}
+
+header p {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+header button {
+  background-color: #222;
+  color: #eee;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+header button:hover {
+  background-color: #333;
+}
+
+
+/* Input styles */
+input, textarea, select {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  display: block;
+  padding: 10px;
+  border: 1px solid #444;
+  border-radius: 4px;
+  background-color: #222;
+  color: #ddd;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #eee;
+}
+
+/* Button styles (general) */
+button {
+    background-color: #222;
+    color: #eee;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #333;
+}
+
+button:disabled {
+  background-color: rgba(34, 34, 34, 0.5);
+  color: rgba(170, 170, 170, 0.8);
+  cursor: not-allowed;
+}
+
+/* Result styles */
+.result {
+  border: 1px solid #444;
+  padding: 15px;
+  margin-top: 15px;
+  background-color: #222;
+  overflow-y: auto;  /* Enable vertical scrolling */
+  max-height: 300px;  /* Limit max height for scrolling */
+  overflow-x: hidden;  /* Hide horizontal scrolling */
+}
+
+.result.success {
+  background-color: #228B22;
+  border-color: #00cc00;
+}
+
+.result.error {
+  background-color: #8B0000;
+  border-color: #ff0000;
+}
+
+/* Animation Styles (using animate.css) */
+.animate__shakeX {
+  animation: shakeX 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+.animate__fadeIn {
+  animation: fadeIn 0.8s ease-in-out forwards;
+}
+
+
+/* Error message style */
+#urlError {
+  color: #ff6961;
+  margin-top: 5px;
+}
+
+
+
+/* About Section Styles */
+#about {
+    text-align: center;
+}
+
+footer {
+  background-color: #222;
+  color: #ddd;
+  padding: 10px 0;
+  text-align: center;
+}
