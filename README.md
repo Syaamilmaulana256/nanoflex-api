@@ -1,26 +1,24 @@
 # NanoFlex API
 
-NanoFlex is a lightweight API built for simple, beginner-friendly data manipulation. It provides basic functionalities like character counting and calculations, making it suitable for learning, experimentation, and simple integration use cases.  NanoFlex is **not designed** for production-level applications needing complex algorithms or high performance.
+NanoFlex is a *lightweight API* built for <ins>*simple, beginner-friendly data manipulation*</ins>. It provides *basic functionalities like character counting and calculations, making it suitable for learning, experimentation, and simple integration use cases*.  NanoFlex is **not designed** for production-level applications needing complex algorithms or high performance.
 > [!CAUTION]
 > This API is **under development**, there may be many strange things, bugs and errors, report them by *opening issues* in this github repository
 
 ## Quick Overview
 
-NanoFlex offers two primary endpoints for simple operations:
+NanoFlex offers *two primary* endpoints for simple operations:
 
-*   `/api/calc`: Performs mathematical calculations (add, reduce, multiply, divide) on a running total. The API supports both GET and POST methods. A current value is persisted in a session (cookie) for cumulative results.  An error occurs if division is performed by 0.
+*   `/api/calc`: Performs mathematical calculations <ins>(add, reduce, multiply, divide)</ins> on a running total. The API supports both `GET` and `POST` methods. A current value is persisted in *a session (cookie)* for cumulative results and reset after *24 hours*.  *An error occurs if division is performed by 0*.
 
 
-*   `/api/charCount`: Counts characters within a provided string, categorizing them into alphabets (a-z, A-Z), numbers (0-9), symbols, spaces, and others (characters not covered by the other categories). The API supports both GET and POST.
+*   `/api/charCount`: Counts characters within a provided string, categorizing them into *alphabets (a-z, A-Z), numbers (0-9), symbols, spaces, and others (characters not covered by the other categories)*. The API supports both `GET` and `POST`.
 
 ## Rate Limit 
-- Before you use our API, you should see what our API **Rate Limit** is to prevent high resource usage and this is important.
-
-| User | Rate Limit | Minutes |
-| :---: | :---: | :---: |
-| Default | **96 requests per IP** | *5 mins* |
-| *Collaborator* | **220 requests per IP** | *15 mins* |
-| **Developer/Owner** | **1k+ requests per IP** | *60mins+* |
+- *Before you use our API*, you should see what our API **Rate Limit** is to <ins>prevent high resource usage and this is important</ins>.
+- The minutes referred to in the table are to reset the request to normal, This happens if you use it many times, or spam occurs. If spam occurs for 5 minutes, then it will **Rate Limit**
+| Rate Limit | Minutes |
+| :---: | :---: |
+| **96 requests per IP** | *5 mins* |
 ## Endpoint Details
 
 ### `/api/calc`
@@ -65,7 +63,8 @@ POST /api/calc
 * **400 Bad Request (invalid operation):** `/api/calc?operation=invalidOperation&value=5`
 * **429 Too Many Requests:**
 - Spamming API
-- Using API multiple times, [see what is the NanoFlex API rate limit](https://github.com/Syaamilmaulana256/nanoflex-api/tree/main?tab=readme-ov-file#rate-limit)
+- Using API multiple times
+[see what is the NanoFlex API rate limit](#rate-limit)
 ### `/api/charCount`
 
 
@@ -114,7 +113,7 @@ Error responses like `400` or `404`  are returned for incorrect input in the req
 
 ## Error Handling & Feedback
 
-To report issues or suggest enhancements, please create an issue on the project repository, specifying the error/suggestion using appropriate tags such as `feature-request`, `bug`,  and `enhancement`.  
+To report *issues, suggest or enhancements*, please create an issue on the project repository, specifying the error/suggestion using appropriate tags such as `suggestion`, `bug`,  and `enhancement`.  
 
 
 ## Important Considerations
