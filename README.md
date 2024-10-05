@@ -1,88 +1,128 @@
-# QuickGraph API
+# NanoFlex API
 
-QuickGraph is a lightweight, beginner-friendly graph API built for simple calculations.  It's primarily intended for educational purposes, simple tasks, or experimenting with fundamental mathematical operations on a graph structure.  QuickGraph is **not designed** for production-level applications needing extensive graph capabilities.
-
->[!CAUTION]
-> This API is still under construction and may contain bugs and errors. Open an issue to report such bugs or errors.
+NanoFlex is a lightweight API built for simple, beginner-friendly data manipulation. It provides basic functionalities like character counting and calculations, making it suitable for learning, experimentation, and simple integration use cases.  NanoFlex is **not designed** for production-level applications needing complex algorithms or high performance.
+> [!CAUTION]
+> This API is **under development**, there may be many strange things, bugs and errors, report them by *opening issues* in this github repository
 
 ## Quick Overview
 
-QuickGraph allows users to perform basic arithmetic calculations. It currently handles the operations 'add', 'reduce', 'multiply', and 'divide', accessible through both GET and POST requests. This API leverages a simple state system, storing a current numerical value via cookies.  This value will be modified by the calculation commands and subsequently reflected in future responses. 
+NanoFlex offers two primary endpoints for simple operations:
+
+*   `/api/calc`: Performs mathematical calculations (add, reduce, multiply, divide) on a running total. The API supports both GET and POST methods. A current value is persisted in a session (cookie) for cumulative results.  An error occurs if division is performed by 0.
 
 
-## Usage Example (JavaScript with Fetch API)
+*   `/api/charCount`: Counts characters within a provided string, categorizing them into alphabets (a-z, A-Z), numbers (0-9), symbols, spaces, and others (characters not covered by the other categories). The API supports both GET and POST.
 
+## Rate Limit 
+- Before you use our API, you should see what our API **Rate Limit** is to prevent high resource usage and this is important.
 
-### GET Method (`/api/calc?<operator>=<number>`)
+| User | Rate Limit | Minutes |
+| :---: | :---: | :---: |
+| Default | **96 requests per IP** | *5 mins* |
+| *Collaborator* | **220 requests per IP** | *15 mins* |
+| **Developer/Owner** | **1k+ requests per IP** | *60mins+* |
+## Endpoint Details
 
-```javascript
-// Example for "add" operation
-fetch('/api/calc?add=5')
-  .then(response => response.json())
-  .then(data => {
-    console.log(data); // Example output: { ok: true, number: 5, message: "Numbers Increased"}
-  })
-  .catch(error => console.error('Error:', error));
+### `/api/calc`
+
+This endpoint supports both GET and POST requests. The operations supported are "add", "reduce", "multiply" and "divide." The current number to operate on is stored in a session (cookie) and defaults to 0 if not initialized.  An error occurs if division is performed by 0.
+
+**GET Request (Example):**
+
 ```
-```javascript
-// Example for "divided" operation
-fetch('/api/calc?divided=2')
-  .then(response => response.json())
-  .then(data => {
-    console.log(data); // Output: { ok: true, number: resultOfDivision, message: "Divided Numbers"}
-  })
-  .catch(error => console.error('Error:', error));
+/api/calc?add=10
 ```
 
+`value` represents the numerical amount. The GET method requires `operation`.
 
-### POST Method (`/api/calc`)
+**POST Request (Example):**
 
-
-```javascript
-fetch('/api/calc', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({ operation: 'add', value: 3 })
-})
-  .then(response => response.json())
-  .then(data => {
-      console.log(data); // Expected Output : { ok: true, number: 3, message: "Numbers Increase"}
-  })
-  .catch(error => console.error('Error:', error));
+```json
+POST /api/calc
+{
+  "operation": "add",
+  "value": 10
+}
 ```
 
 
-## Data Model
+**Example Result (200 OK):**
 
-The API maintains a running calculation, storing the results of previous operations using cookies.  A cookie named `number` holds the current calculated value.
+```json
+{
+  "ok": true,
+  "code": "200",
+  "message": "Calculation successful",
+  "data": {
+    "number": 20 
+  }
+}
+```
+
+**Error Responses (Example):**
+
+* **400 Bad Request (missing or invalid value):**  `/api/calc?value=invalidInput`
+* **400 Bad Request (invalid operation):** `/api/calc?operation=invalidOperation&value=5`
+* **429 Too Many Requests:**
+- Spamming API
+- Using API multiple times, [see what is the NanoFlex API rate limit](https://github.com/Syaamilmaulana256/nanoflex-api/README.md#rate-limit)
+### `/api/charCount`
+
+
+This endpoint counts characters based on categories.
+
+**GET Request (Example):**
+
+```
+/api/charCount?text=Hello world!, 123
+```
+
+**POST Request (Example):**
+
+```json
+POST /api/charCount
+{
+  "text": "Hello world!, 123"
+}
+```
+
+The request can have either the `text` parameter (GET) or a body with the text.
+
+
+**Example Result (200 OK):**
+
+
+```json
+{
+  "ok": true,
+  "code": "200",
+  "message": "Character count successful",
+  "data": {
+    "alphabet": 10,
+    "numbers": 3,
+    "symbols": 1,
+    "spaces": 2,
+    "others": 0,
+    "total": 16
+  }
+}
+```
+
+Error responses like `400` or `404`  are returned for incorrect input in the request, making error handling transparent.
+
+
+
+## Error Handling & Feedback
+
+To report issues or suggest enhancements, please create an issue on the project repository, specifying the error/suggestion using appropriate tags such as `feature-request`, `bug`,  and `enhancement`.  
 
 
 ## Important Considerations
 
-* The API is designed for simplicity.
-* Results are directly modified in the UI through a persisted session and reflect all cumulative previous results from all operation.
-* No real time operation are possible, a user action causes server request to the specified endpoints
 
-
-## Error Handling
-
-Error responses from the API (e.g., `400`, `429`) are given as JSON arrays for standardized errors (example of response : `{ ok:false, code:"<code>", message: "<Message>"}`)
-
-
-## Limitations
-
-*   This API lacks sophisticated graph algorithm functionalities and performance optimization, best for use cases where straightforward arithmetic on an accumulated value suffice.
-
+*  The design prioritizes simplicity and assumes requests follow specific syntaxes or formats outlined for parameters and input.
 
 
 ## Contributing
 
-
-If you'd like to enhance or modify the functionalities:
-
-Please reach out via the QuickGraph channel(s).
-
-## Contact
-Questions, suggestions, feedback, error or bug just open issues on this Github Repository
+We welcome any contributions from users with feedback, testing suggestions, corrections, and other potential improvements to NanoFlex (see the CONTRIBUTING document or guidelines, should that be included).
