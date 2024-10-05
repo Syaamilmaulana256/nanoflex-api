@@ -6,7 +6,8 @@ NanoFlex is a *lightweight API* built for <ins>*simple, beginner-friendly data m
 
 ## Becoming a Collaborator
 
-We welcome any collaborators from users with *feedback, testing suggestions, corrections* and other potential improvements to NanoFlex, You can become a collaborator by opening an issue with the tag `collaborator`.
+We welcome any collaborators from users with *feedback, testing suggestions, corrections* and other potential improvements to NanoFlex, You can become a collaborator by opening an issue with the tag `collaborator`. 
+[see this for example](https://github.com/Syaamilmaulana256/nanoflex-api/issues/1)
 
 ## Quick Overview
 
