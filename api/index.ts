@@ -15,24 +15,6 @@ const rl = rateLimit({
 
 app.use(rl);
 app.use(express.json());
-
-// Authorization Middleware
-const auth = (req: Request, res: Response, next: Function) => {
-  const hdr = req.headers['authorization'];
-
-  if (!hdr) {
-    res.setHeader('WWW-Authenticate', 'Basic');
-    return res.status(401).json([{ ok: false, code: '401', message: 'Authorization required' }]);
-  }
-
-  const [user, pwd] = Buffer.from(hdr.split(' ')[1], 'base64').toString().split(':');
-
-  const usr = 'AdMiNiStRaToR';
-  const pass = 'ADMINistrator℅%℅%1212';
-
-  return (user === usr && pwd === pass) ? next() : res.status(401).json([{ ok: false, code: '401', message: 'Invalid credentials' }]);
-};
-
 // Parse Cookie Helper
 function parseCks(c: string | undefined): { [k: string]: string } {
   const cks: { [k: string]: string } = {};
@@ -115,7 +97,7 @@ function countHandler(req: Request, res: Response) {
 
   const result = countChars(text);
   // Set custom headers
-  res.setHeader('Server', 'what a sigma');
+  res.setHeader('server', 'what a sigma');
   res.setHeader('X-Powered-By', 'ur heart'); 
   return res.json([{ ok: true, code: '200', message: 'Character count successful', data: result }]);
 }
@@ -161,7 +143,7 @@ function calculateHandler(req: Request, res: Response) {
     res.setHeader('Set-Cookie', `number=${n}; HttpOnly; ${secure ? 'Secure;' : ''} Expires=${expDate.toUTCString()}; Path=/`);
 
     // Set custom headers
-    res.setHeader('Server', 'what a sigma');
+    res.setHeader('server', 'what a sigma');
     res.setHeader('X-Powered-By', 'ur heart');
 
     res.json([{ ok: true, code: '200', message: m, data: { number: n } }]);
@@ -181,12 +163,6 @@ app.use('/api/charCount', (req: Request, res: Response) => countHandler(req, res
 app.use('/api/calc', (req: Request, res: Response) => calculateHandler(req, res));
 
 // /api/auth with auth middleware
-app.use('/api/auth', auth, (req: Request, res: Response) => {
-  // Set custom headers
-  res.setHeader('Server', 'what a sigma');
-  res.setHeader('X-Powered-By', 'ur hearts');
-  res.json([{ ok: true, code: '200', message: 'Authenticated successfully!' }]);
-});
 
 // Default Export Handler for Vercel
 export default (req: VercelRequest, res: VercelResponse) => {
