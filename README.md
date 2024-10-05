@@ -65,7 +65,7 @@ POST /api/calc
 * **400 Bad Request (invalid operation):** `/api/calc?operation=invalidOperation&value=5`
 * **429 Too Many Requests:**
 - Spamming API
-- Using API multiple times, [see what is the NanoFlex API rate limit](https://github.com/Syaamilmaulana256/nanoflex-api/README.md#rate-limit)
+- Using API multiple times, [see what is the NanoFlex API rate limit](https://github.com/Syaamilmaulana256/nanoflex-api/tree/main?tab=readme-ov-file#rate-limit)
 ### `/api/charCount`
 
 
