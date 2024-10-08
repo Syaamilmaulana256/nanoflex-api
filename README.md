@@ -59,20 +59,23 @@ POST /api/calc
 **Example Result (200 OK):**
 
 ```json
-{
-  "ok": true,
-  "code": "200",
-  "message": "Calculation successful",
-  "data": {
-    "number": 20 
+[
+  {
+    "ok": true,
+    "code": "200",
+    "message": "Numbers Increased",
+    "data": {
+      "number": 10
+    }
   }
-}
+]
 ```
 
 **Error Responses (Example):**
 
-* **400 Bad Request (missing or invalid value):**  `/api/calc?value=invalidInput`
-* **400 Bad Request (invalid operation):** `/api/calc?operation=invalidOperation&value=5`
+* **400 Bad Request (missing or invalid value):**  `/api/calc?add=invalid`
+* **400 Bad Request (missing or invalid operation):** `/api/calc?invalid=10`
+*  **500 Internal Server Error:** *Basically there is an error in the server*
 * **429 Too Many Requests:**
   * Spamming API
   * Using API multiple times
@@ -110,19 +113,21 @@ The request can have either the `text` parameter (GET) or a body with the text.
 
 
 ```json
-{
-  "ok": true,
-  "code": "200",
-  "message": "Character count successful",
-  "data": {
-    "alphabet": 10,
-    "numbers": 3,
-    "symbols": 1,
-    "spaces": 2,
-    "others": 0,
-    "total": 16
+[
+  {
+    "ok": true,
+    "code": "200",
+    "message": "Character count successful",
+    "data": {
+      "symbols": 1,
+      "alphabet": 10,
+      "numbers": 3,
+      "spaces": 2,
+      "others": 0,
+      "total": 16
+    }
   }
-}
+]
 ```
 
 > [!NOTE]
@@ -133,11 +138,3 @@ The request can have either the `text` parameter (GET) or a body with the text.
 ## Error Handling & Feedback
 
 To report *issues, suggest or enhancements*, please create an issue on the project repository, specifying the error/suggestion using appropriate tags such as `suggestion`, `bug`,  and `enhancement`.  
-
-
-## Important Considerations
-
-
-*  The design prioritizes simplicity and assumes requests follow specific syntaxes or formats outlined for parameters and input.
-
-
