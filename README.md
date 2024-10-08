@@ -31,13 +31,19 @@ NanoFlex offers *two primary* endpoints for simple operations:
 
 This endpoint supports both GET and POST requests. The operations supported are *"add", "reduce", "multiply":and "divide."* The current number to operate on is stored in a session (cookie) and defaults to 0 if not initialized.  An error occurs if division is performed by 0.
 
+Endpoint 
+
+```
+/api/calc?<operation>=<value>
+```
+
+`<operation>` is the mathematical operation (add, reduce, multiply and divide), while `<value>` is the number to be calculated.
+
 **GET Request (Example):**
 
 ```
 /api/calc?add=10
 ```
-
-`value` represents the numerical amount. The GET method requires `operation`.
 
 **POST Request (Example):**
 
@@ -68,13 +74,19 @@ POST /api/calc
 * **400 Bad Request (missing or invalid value):**  `/api/calc?value=invalidInput`
 * **400 Bad Request (invalid operation):** `/api/calc?operation=invalidOperation&value=5`
 * **429 Too Many Requests:**
-- Spamming API
-- Using API multiple times
+  * Spamming API
+  * Using API multiple times
 [see what is the NanoFlex API rate limit](#rate-limit)
 ### `/api/charCount`
 
 
-This endpoint counts characters based on categories.
+Endpoint 
+
+```
+/api/charCount?text=<string>
+```
+
+Fill `<string>` with text
 
 **GET Request (Example):**
 
@@ -113,7 +125,8 @@ The request can have either the `text` parameter (GET) or a body with the text.
 }
 ```
 
-Error responses like `400` or `404`  are returned for incorrect input in the request, making error handling transparent.
+> [!NOTE]
+> Chances are, Error `400` and `404` are **almost impossible** to occur because it is just a character count, if you encounter it, open an `issue` as a `bug` tag.
 
 
 
