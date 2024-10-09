@@ -67,14 +67,10 @@ document.addEventListener("DOMContentLoaded", function() {
     const method = methodSelect.value;
     const body = method === 'POST' ? postBody.value : null;
 
-    if(url === "" || !url.startsWith("http")){
-      resultDiv.textContent = "Please enter a valid URL starting with http(s).";
-      resultDiv.classList.remove("animate__fadeIn");
-      resultDiv.classList.add("animate__shakeX");
-
-      return;
-    }
-
+    url.addEventListener("change", () => {
+    sendRequestBtn.disabled = !url.length > 0;
+    })
+    return;
     fetch(url, {
       method: method,
       headers: {
@@ -84,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function() {
     })
     .then(response => {
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`Error : ${response.status}`);
       }
       return response.json();
     })
