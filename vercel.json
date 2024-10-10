@@ -3,11 +3,15 @@
   "builds": [
     { "src": "api/**/*.ts", "use": "@vercel/node" },
     { "src": "*.html", "use": "@vercel/static" },
-    { "src": "src/**", "use": "@vercel/static" }
+    { "src": "src/**", "use": "@vercel/static" },
+    { "src": "*.xml", "use": "@vercel/static" },
+    { "src": "*.txt", "use": "@vercel/static" },
+    { "src": "*.json", "use": "@vercel/static" }
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/index.ts" },
     { "src": "/src/(.*)", "dest": "/src/$1" },
-    { "handle": "filesystem" }
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/$1" }
   ]
 }
