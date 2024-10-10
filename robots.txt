@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://nanoflex-api.vercel.app/sitemap.xml
+
+User-agent: *
+Disallow: /src/
