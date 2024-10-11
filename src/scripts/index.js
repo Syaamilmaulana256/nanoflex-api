@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
   const sReqBtn = document.getElementById('reqBtn');
-  const urlIn = document.getElementById('urlInpur');
+  const urlIn = document.getElementById('urlInput');
   const resDiv = document.querySelector('.result');
   const methodSelect = document.getElementById('methodInput');
   const bodyIn = document.getElementById('bodyInput');
