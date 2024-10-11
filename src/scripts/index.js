@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
   function tptosection(sectionID) {
     const targetElement = document.querySelector(sectionID);
     if (targetElement) {
-      targetElement.style.scrollBehavior({ behavior: "smooth" });
+      targetElement.scrollIntoView({ behavior: "smooth" });
     }
   }
 
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   const ctaBtn = document.getElementById("cta-btn");
   ctaBtn.addEventListener("click", function() {
-    document.querySelector('#docs').style.scrollBehavior({ behavior: 'smooth' });
+    document.querySelector('#docs').scrollIntoView({ behavior: 'smooth' });
   });
 
 
