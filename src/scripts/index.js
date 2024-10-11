@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
   function tptosection(sectionID) {
     const targetElement = document.querySelector(sectionID);
     if (targetElement) {
-      targetElement.tptosection({ behavior: "smooth" });
+      targetElement.scrollBehavior({ behavior: "smooth" });
     }
   }
 
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   const ctaBtn = document.getElementById("cta-btn");
   ctaBtn.addEventListener("click", function() {
-    document.querySelector('#docs').tptosection({ behavior: 'smooth' });
+    document.querySelector('#docs').scrollBehavior({ behavior: 'smooth' });
   });
 
 
@@ -94,6 +94,6 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 });
 
-function secretThings(datetime) {
+function secretThing(datetime) {
   alert("now is : " + datetime)
 }
