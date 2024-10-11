@@ -2,15 +2,14 @@
 <html lang="en">
 <head>
     <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-KX6P9WQQ');</script>
-<!-- End Google Tag Manager -->
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-9DRWZDS5F6"></script>
-<script>
+   <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9DRWZDS5F6"></script>
+    <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
@@ -18,18 +17,39 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   gtag('config', 'G-9DRWZDS5F6');
 </script>
     <title>NanoFlex API</title>
-<meta name="description" content="A surprisingly (and somewhat) useless API for beginner developers to experiment with.">
-<meta name="keywords" content="useless-api, for-begginers, simple-api">
-<meta name="robots" content="index, follow">
-<meta name="copyright" content="© 2024 NanoFlex API. All rights reserved.">
-<meta name="language" content="EN">
-<meta name="author" content="GGLOBAL Group">
-<meta name="creationdate" content="August 17 2024">
-<meta name="distribution" content="global">
-<meta name="rating" content="general">
+    <meta name="og:title" content="NanoFlex API">
+    <meta name="description" content="A surprisingly (and somewhat) useless API for beginner developers to experiment with.">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#67c701">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="-1">
+    <meta http-equiv="Content-Language" content="en-US">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- Facebook Meta Tags -->
+    <meta property="og:url" content="https://nanoflex-api.vercel.app">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="NanoFlex API">
+    <meta property="og:description" content="A surprisingly (and somewhat) useless API for beginner developers to experiment with.">
+    <meta property="og:image" content="./src/favicons/favicon.webp">
+
+  <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="nanoflex-api.vercel.app">
+    <meta property="twitter:url" content="https://nanoflex-api.vercel.app">
+    <meta name="twitter:title" content="NanoFlex API">
+    <meta name="twitter:description" content="A surprisingly (and somewhat) useless API for beginner developers to experiment with.">
+    <meta name="twitter:image" content="./src/favicons/favicon.webp">
+    <meta name="keywords" content="useless-web, useless-api  for-begginers, simple-api, experiment-api, boring-api">
+    <meta name="author" content="GGLobal Praject Group">
+    <link rel="icon" type="image/x-icon" href="./src/favicons/favicon.webp">
+    <meta name="creationdate" content="August 17 2024">
+    <meta name="distribution" content="global">
+    <meta name="rating" content="general">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="./src/favicons/favicon.jpeg">
+    <link rel="icon" type="image/x-icon" href="./src/favicons/favicon.webp">
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
@@ -44,7 +64,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="container mx-auto flex justify-between items-center">
             <div class="text-2xl font-bold">NanoFlex API</div>
             <ul class="flex space-x-6">
-                <li><a href="#documentation" class="hover:text-gray-300 transition duration-300 ease-in-out">Docs</a></li>
+                <li><a href="#docs" class="hover:text-gray-300 transition duration-300 ease-in-out">Docs</a></li>
                 <li><a href="#try-now" class="hover:text-gray-300 transition duration-300 ease-in-out">Try Now</a></li>
                 <li><a href="#about" class="hover:text-gray-300 transition duration-300 ease-in-out">About</a></li>
             </ul>
@@ -57,7 +77,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <button id="cta-btn" class="bg-gray-700 text-gray-200 py-3 px-6 rounded-md hover:bg-gray-600 transition duration-300 ease-in-out">Get Started</button>
     </header>
 
-    <section id="documentation" class="py-20 text-center">
+    <section id="docs" class="py-20 text-center">
         <h2 class="text-3xl font-bold text-gray-300 mb-6">Documentation</h2>
         <p class="mb-6 text-gray-400">
            This API provides basic functionalities, including various sample endpoints.  The documentation below will assist you with understanding the available endpoints, their functionality, and parameters. 
@@ -79,24 +99,24 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         <div class="mb-4">
             <label for="url" class="block text-lg mb-2 text-gray-200">URL:</label>
-            <input type="url" id="url" placeholder="https://nanoflex-api.vercel.app/api"
+            <input type="url" id="urlInput" placeholder="https://nanoflex-api.vercel.app/api"
                    class="bg-gray-700 text-gray-200 border border-gray-600 rounded-md py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
-            <p id="urlError" class="text-red-500 text-sm mt-2 hidden">Invalid or empty URL.</p>
+            <p id="urlErr" class="text-red-500 text-sm mt-2 hidden">Invalid or empty URL.</p>
         </div>
 
-        <div id="postBodyContainer" class="mb-4 hidden">
+        <div id="bodyContainer" class="mb-4 hidden">
             <label for="postBody" class="block text-lg mb-2 text-gray-200">POST Body:</label>
             <textarea id="postBody" rows="4"
                       class="bg-gray-700 text-gray-200 border border-gray-600 rounded-md py-2 px-4 w-full focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"></textarea>
         </div>
 
-        <button id="sendRequest" class="bg-gray-700 text-gray-200 py-3 px-6 rounded-md hover:bg-gray-600 transition duration-300 ease-in-out disabled" disabled>Try Now</button>
+        <button id="reqBtn" class="bg-gray-700 text-gray-200 py-3 px-6 rounded-md hover:bg-gray-600 transition duration-300 ease-in-out disabled" disabled>Try Now</button>
 
         <div class="result mt-8 p-4 border rounded-md bg-gray-800 text-gray-400"></div>
     </section>
 
     <section id="about" class="py-20 text-center">
-        <h2 class="text-3xl font-bold text-gray-300 mb-6">About NanoFlex API</h2>
+        <h2 class="text-3xl font-bold text-gray-300 mb-6" onclick="secretThing(new Date().getTime())">About NanoFlex API</h2>
         <p class="text-gray-400">
             NanoFlex API is a simple API designed for educational purposes and testing.  It features sample endpoints and functionalities to aid in understanding the basics of API interactions. Feel free to explore, experiment, and learn!
         </p>
