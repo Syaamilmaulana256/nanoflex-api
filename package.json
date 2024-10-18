@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "build:css": "postcss src/styles/index.css -o src/styles/dist/styles.css"
+    "start": "next start"
   },
   "dependencies": {
     "express": "^4.17.1",
