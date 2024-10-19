@@ -1,6 +1,6 @@
 {
-  "name": "aura-api",
-  "version": "1.0.0",
+  "name": "nanoflex-api",
+  "version": "1.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,7 +10,10 @@
   "dependencies": {
     "express": "^4.17.1",
     "next": "latest", 
-    "express-rate-limit": "^7.4.0"
+    "express-rate-limit": "^7.4.0",
+    "postcss", "^8.4.47",
+    "tailwindcss": "^3.4.14",
+    "autoprefixer": "^10.4.20"
   },
   "devDependencies": {
     "@types/express": "^4.17.1",
