@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "npx tailwindcss init && next dev",
-    "build": "npx tailwindcss init tailwind.config.js -p && next build",
+    "build": "npx tailwindcss init && next build",
     "start": "next start"
   },
   "dependencies": {
