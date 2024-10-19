@@ -20,6 +20,8 @@ body {
 }
 
 h1, h2 {
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
   color: #eee;
   margin-bottom: 10px;
 }
@@ -34,6 +36,7 @@ p {
 
 /* Navbar styles */
 nav {
+  font-family: "Oxanium", sans-serif;
   background-color: #1a1a1a;
   padding: 10px 0;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
