@@ -1,10 +1,8 @@
-/* index.css */
-
 /* General styles */
 body {
   font-family: 'Poppins', sans-serif;
-  background-color: #121212;
-  color: #eee;
+  background-color: #1C1C1C;  /* Warna hitam yang tidak terlalu gelap */
+  color: #E6E6E6;  /* Putih ke-abuan */
   margin: 0;
   padding: 0;
 }
@@ -18,14 +16,14 @@ body {
 h1, h2 {
   font-family: "Poppins", sans-serif;
   font-weight: 700;
-  color: #eee;
+  color: #E6E6E6;  /* Warna teks putih ke-abuan */
   margin-bottom: 10px;
 }
 
 p {
   font-family: "Poppins", sans-serif;
   font-weight: 400;
-  color: #ddd;
+  color: #B3B3B3;  /* Warna teks abu-abu terang */
   line-height: 1.6;
   margin-bottom: 15px;
 }
@@ -33,38 +31,25 @@ p {
 /* Navbar styles */
 nav {
   font-family: "Oxanium", sans-serif;
-  background-color: #1a1a1a;
+  background-color: #2B2B2B;  /* Abu-abu gelap untuk navbar */
   padding: 10px 0;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-nav .container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-nav ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-}
-
 nav a {
-  color: #eee;
+  color: #E6E6E6;  /* Teks putih ke-abuan */
   text-decoration: none;
   padding: 10px 15px;
   transition: color 0.3s ease;
 }
 
 nav a:hover {
-  color: #ddd;
+  color: #B3B3B3;  /* Abu-abu terang saat hover */
 }
 
 /* Header styles */
 header {
-  background-image: linear-gradient(to right, #222, #111);
+  background-image: linear-gradient(to right, #2B2B2B, #1C1C1C);  /* Gradien abu-abu gelap dan hitam */
   padding: 40px 0;
   text-align: center;
 }
@@ -79,8 +64,8 @@ header p {
 }
 
 header button {
-  background-color: #222;
-  color: #eee;
+  background-color: #2B2B2B;  /* Tombol dengan abu-abu gelap */
+  color: #E6E6E6;  /* Teks putih ke-abuan */
   padding: 12px 20px;
   border: none;
   border-radius: 5px;
@@ -89,9 +74,8 @@ header button {
 }
 
 header button:hover {
-  background-color: #333;
+  background-color: #4D4D4D;  /* Tombol hover abu-abu sedang */
 }
-
 
 /* Input styles */
 input, textarea, select {
@@ -102,10 +86,10 @@ input, textarea, select {
   margin: 0 auto;
   display: block;
   padding: 10px;
-  border: 1px solid #444;
+  border: 1px solid #4D4D4D;  /* Border abu-abu sedang */
   border-radius: 4px;
-  background-color: #222;
-  color: #ddd;
+  background-color: #2B2B2B;  /* Background abu-abu gelap */
+  color: #B3B3B3;  /* Teks abu-abu terang */
   margin-bottom: 10px;
   box-sizing: border-box;
 }
@@ -113,38 +97,38 @@ input, textarea, select {
 label {
   display: block;
   margin-bottom: 5px;
-  color: #eee;
+  color: #E6E6E6;  /* Warna teks putih ke-abuan */
 }
 
 /* Button styles (general) */
 button {
-    font-family: "Oxanium", sans-serif;
-    font-weight: 600;
-    background-color: #222;
-    color: #eee;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  font-family: "Oxanium", sans-serif;
+  font-weight: 600;
+  background-color: #2B2B2B;  /* Tombol abu-abu gelap */
+  color: #E6E6E6;  /* Teks putih ke-abuan */
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #333;
+  background-color: #4D4D4D;  /* Hover tombol abu-abu sedang */
 }
 
 button:disabled {
-  background-color: rgba(34, 34, 34, 0.5);
-  color: rgba(170, 170, 170, 0.8);
+  background-color: rgba(43, 43, 43, 0.5);  /* Disable tombol */
+  color: rgba(179, 179, 179, 0.8);  /* Warna teks disabled */
   cursor: not-allowed;
 }
 
 /* Result styles */
 .result {
-  border: 1px solid #444;
+  border: 1px solid #4D4D4D;  /* Border abu-abu sedang */
   padding: 15px;
   margin-top: 15px;
-  background-color: #222;
+  background-color: #2B2B2B;  /* Latar belakang abu-abu gelap */
   overflow-y: auto;  /* Enable vertical scrolling */
   max-height: 300px;  /* Limit max height for scrolling */
   overflow-x: hidden;  /* Hide horizontal scrolling */
@@ -160,32 +144,15 @@ button:disabled {
   border-color: #ff0000;
 }
 
-/* Animation Styles (using animate.css) */
-.animate__shakeX {
-  animation: shakeX 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-}
-
-.animate__fadeIn {
-  animation: fadeIn 0.8s ease-in-out forwards;
-}
-
-
-/* Error message style */
-#urlError {
-  color: #ff6961;
-  margin-top: 5px;
-}
-
-
-
 /* About Section Styles */
 #about {
     text-align: center;
 }
 
+/* Footer Styles */
 footer {
-  background-color: #222;
-  color: #ddd;
+  background-color: #1C1C1C;  /* Footer hitam lebih terang */
+  color: #B3B3B3;  /* Teks abu-abu terang */
   padding: 10px 0;
   text-align: center;
 }
