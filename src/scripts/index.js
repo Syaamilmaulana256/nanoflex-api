@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
   const urlIn = document.getElementById('urlInput');
   const resDiv = document.querySelector('.result');
   const methodSelect = document.getElementById('methodInput');
-  const bodyIn = document.getElementById('bodyInput');
+  const bodyIn = document.getElementById('bodyContainer');
   const postBody = document.getElementById('postBody');
   const urlErr = document.getElementById('urlErr');
 
