@@ -41,7 +41,9 @@ document.addEventListener("DOMContentLoaded", function() {
   methodSelect.addEventListener('change', function() {
     if (this.value === 'POST') {
       bodyIn.classList.remove('hidden');
+      alert(this.value)
     } else {
+      alert(this.value)
       bodyIn.classList.add('hidden');
       postBody.value = "";  //Clear POST body on GET selection
     }
