@@ -69,7 +69,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const method = methodSelect.value;
     const body = method === 'POST' ? postBody.value : null;
 
-    return;
     fetch(url, {
       method: method,
       headers: {
